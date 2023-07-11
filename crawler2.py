@@ -137,6 +137,7 @@ Gruppe = []
 if os.path.exists(path) == True:
     #Ordnerinhalt aufliste
     PathvonLogDatei = r'C:\Users\admin\Desktop\Animelog.txt'
+    path_text = r"C:\Users\admin\Desktop\Gruppen.txt"
     #Lof file öffnen
     Animetexteintragzumvergleich = OpenLogFile(PathvonLogDatei)
     Inhalte = os.listdir(path)
@@ -152,7 +153,7 @@ if os.path.exists(path) == True:
             #Dodo Funktion die den Ainme auf : ? # überprüft und aus löscht oder ersetzt
             Animename = KillSpezialBuchtaben(Animename)
             AnimeType = TagSource()
-            Gruppe = finde_groupname(os.path.join(path, inhalt), SourceList)
+            Gruppe = finde_groupname(os.path.join(path, inhalt), SourceList,path_text)
             Findname(os.path.join(path, inhalt),Gruppe, Animename, AnimeType)
             Animename = RenameOrdner(Animename)
             SaveLogFile(Animename)

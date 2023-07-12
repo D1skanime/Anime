@@ -11,34 +11,9 @@ from tkinter import messagebox
 from delete_images import delete_images
 from delete_ordner import delete_ordner
 from finde_groupname import finde_groupname
-                            
+from Findname import Findname
 
-
-
-
-def Findname(path, Gruppe, Animename, AnimeType):
-    Videofiles = os.listdir(path)
-    Zähler = 0
-    for Viedeofile in Videofiles:
-        Zähler = Zähler + 1 
-        VideoSourcetype = Source(Viedeofile)
-        Zähler = str(Zähler).rjust(2, '0')
-        if AnimeType != "":
-            NewAnimeName = Animename + "." + AnimeType + "E" + Zähler + Gruppe + VideoSourcetype
-        else:
-            NewAnimeName = Animename + "." + Zähler + Gruppe + VideoSourcetype
-    
-        src = os.path.join(path, Viedeofile)
-        dst = os.path.join(path, NewAnimeName)
-    
-        if os.path.exists(src):
-            shutil.move(src, dst)
-        else:
-            print(f"Die Datei {src} wurde nicht gefunden.")            
-                  
-    
-#Ordner im Verezeichnis Ordner löschen
-#Ordnerkill = Path des Aktuellen Ordner in dem was gelöscht werden soll
+                                       
 
       
 
@@ -55,18 +30,9 @@ def KillSpezialBuchtaben(Animename):
                 Animename = Animename.replace(SonderZeichen, "")
         return Animename
 
-
-
-
-   
-          
-
 #funktion du erkennt welchen Datei Type es ist und diese dann zurück schriebt
 
-def Source(type):
-    for source in SourceList:
-        if source in type:
-            return source   
+  
 #funktion unbennen des Ordnername wie Anime oder neuer Name
 def RenameOrdner(Animename):
     print("----Inhalt =-------------"+ inhalt + "-------------------------")
@@ -154,6 +120,6 @@ if os.path.exists(path) == True:
             Animename = KillSpezialBuchtaben(Animename)
             AnimeType = TagSource()
             Gruppe = finde_groupname(os.path.join(path, inhalt), SourceList,path_text)
-            Findname(os.path.join(path, inhalt),Gruppe, Animename, AnimeType)
+            Animename = Findname(os.path.join(path, inhalt),Gruppe, Animename, AnimeType, SourceList)
             Animename = RenameOrdner(Animename)
             SaveLogFile(Animename)

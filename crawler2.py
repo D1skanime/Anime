@@ -9,46 +9,12 @@ import tkinter as tk
 from tkinter import messagebox
 
 from delete_images import delete_images
-                            
+from delete_ordner import delete_ordner
+from finde_groupname import finde_groupname
+from Findname import Findname
 
-#Finde den Gruppename für die Folge im Verzechnis
-def FindGroupname(Path_des_Aktuellen_Ordner, Animename, AnimeType):
-    Videofiles = os.listdir(Path_des_Aktuellen_Ordner)
-    #Videofiles.sort()
-    Zähler = 0
-    print("------------------------------------------")
-    print("\n".join(Videofiles)) 
-    print("\n""------------------------------------------")
-    Gruppename = input("Gruppename eingeben: ")
-    for Viedeofile in Videofiles:
-        Zähler = Zähler+1
-        #if Viedeofile.startswith("["):
-         #   EndIndex = find("]")
-          #  Gruppe = "-"+(Viedeofile[1:EndIndex-1])
-        if Gruppename == "":
-            Gruppe = ("-null")
-        else:
-            Gruppe =  "-"+Gruppename     
-        Findname(Viedeofile, Zähler, Gruppe, Animename, AnimeType)    
-                  
-    
-#Ordner im Verezeichnis Ordner löschen
-#Ordnerkill = Path des Aktuellen Ordner in dem was gelöscht werden soll
-def DeleteOrdner(Ordnerkill):
-    Verzeichnisse_kill =  [f.path for f in os.scandir(Ordnerkill) if f.is_dir()]
-    for Verzechnis_kill in Verzeichnisse_kill:
-        try:
-            shutil.rmtree(Verzechnis_kill)
-        except OSError as e:
-            print(f"Error:{e.strerror}")
-            #Ordner umbennen
-    print(inhalt)         
-    Animename = input("---------------------------------------------\n Geben Sie den Animename des Animes: " )
-    #Dodo Funktion die den Ainme auf : ? # überprüft und aus löscht oder ersetzt
-    Animename = KillSpezialBuchtaben(Animename)
-    AnimeType = TagSource()
-    FindGroupname(Ordnerkill, Animename, AnimeType)
-    return Animename
+                                       
+
       
 
 def TagSource():
@@ -62,26 +28,11 @@ def KillSpezialBuchtaben(Animename):
                 Animename = Animename.replace(SonderZeichen, "!")
             else:    
                 Animename = Animename.replace(SonderZeichen, "")
-              
-    return Animename
-
-
-def Findname(Viedeofile, Zähler, Gruppe, Animename, AnimeType):
-    VideoSourcetype =   Source(Viedeofile)
-    Zähler=str(Zähler).rjust(2, '0')
-    if AnimeType != "": 
-        NewAnimeName = Animename +"."+AnimeType+"E" + Zähler + Gruppe + VideoSourcetype
-    else:
-        NewAnimeName = Animename + "."+Zähler + Gruppe + VideoSourcetype    
-    os.rename(path+"\\" + inhalt + "\\" + Viedeofile, path+"\\" + inhalt + "\\" + NewAnimeName)        
-          
+        return Animename
 
 #funktion du erkennt welchen Datei Type es ist und diese dann zurück schriebt
 
-def Source(type):
-    for source in SourceList:
-        if source in type:
-            return source   
+  
 #funktion unbennen des Ordnername wie Anime oder neuer Name
 def RenameOrdner(Animename):
     print("----Inhalt =-------------"+ inhalt + "-------------------------")
@@ -113,18 +64,46 @@ def OpenLogFile(PathvonLogDatei):
     return(Animetexteintrag)
     
 
-SourceList = [".avi", ".mkv", ".mp4",".wmv",".ogm","m4v"]
+SourceList = [
+    ".mp4",
+    ".mov",
+    ".avi",
+    ".wmv",
+    ".flv",
+    ".mkv",
+    ".webm",
+    ".3gp",
+    ".mpg",
+    ".mpeg",
+    ".rm",
+    ".rmvb",
+    ".vob",
+    ".m4v",
+    ".ts",
+    ".m2ts",
+    ".f4v",
+    ".divx",
+    ".ogv",
+    ".ogm",
+    ".asf",
+    ".mxf",
+    ".flv",
+    ".mpg",
+    ".webm"]
+
 SonderzeichenListe = ["/","?","*","<",">","''","|",":"]
     
 #path = "C:\\Users\\D1sk\\Desktop\\xxxxxxx\\sss\\TestOrdner"
 #EndungOrdner = input ("\nEndung eintragen: ")
 #jpg = input("Sollen die JPG und png gelöscht werden, dann Tippe\n für Ja: J oder Enter\n für Nein: n\n...  ")
-path = input("\nPfad des Main Ordner eingeben der durchsucht werden soll: ""\n")
+#path = input("\nPfad des Main Ordner eingeben der durchsucht werden soll: ""\n")
+path = r"C:\Users\admin\Desktop\Test"
 Gruppe = []
   
 if os.path.exists(path) == True:
-    #Ordnerinhalt auflisten
-    PathvonLogDatei = 'A:\Anime\Animelog.txt'
+    #Ordnerinhalt aufliste
+    PathvonLogDatei = r'C:\Users\admin\Desktop\Animelog.txt'
+    path_text = r"C:\Users\admin\Desktop\Gruppen.txt"
     #Lof file öffnen
     Animetexteintragzumvergleich = OpenLogFile(PathvonLogDatei)
     Inhalte = os.listdir(path)
@@ -135,6 +114,12 @@ if os.path.exists(path) == True:
         #if inhalt.endswith(EndungOrdner) == True:
            # Ordnerinhalt lesen und Bilder löschen
             delete_images(os.path.join(path, inhalt))
-            Animename = DeleteOrdner(path+"\\" +inhalt)
+            delete_ordner(os.path.join(path, inhalt))
+            Animename = input("---------------------------------------------\n Geben Sie den Animename des Animes: " )
+            #Dodo Funktion die den Ainme auf : ? # überprüft und aus löscht oder ersetzt
+            Animename = KillSpezialBuchtaben(Animename)
+            AnimeType = TagSource()
+            Gruppe = finde_groupname(os.path.join(path, inhalt), SourceList,path_text)
+            Animename = Findname(os.path.join(path, inhalt),Gruppe, Animename, AnimeType, SourceList)
             Animename = RenameOrdner(Animename)
             SaveLogFile(Animename)

@@ -5,7 +5,7 @@ import tkinter as tk
 
 
 #funktion unbennen des Ordnername wie Anime oder neuer Name
-def RenameOrdner(Animename):
+def RenameOrdner(path,Animename, inhalt):
     print("----Inhalt =-------------"+ inhalt + "-------------------------")
     newOrdnerAnimename = input("Ordnername wie AktuellerOrdnername?: ")
     if newOrdnerAnimename == "j" or newOrdnerAnimename == "" or newOrdnerAnimename == "J":

@@ -12,6 +12,7 @@ from delete_images import delete_images
 from delete_ordner import delete_ordner
 from finde_groupname import finde_groupname
 from Findname import Findname
+from RenameOrdner import RenameOrdner
 
                                        
 
@@ -30,24 +31,8 @@ def KillSpezialBuchtaben(Animename):
                 Animename = Animename.replace(SonderZeichen, "")
         return Animename
 
-#funktion du erkennt welchen Datei Type es ist und diese dann zurück schriebt
-
   
-#funktion unbennen des Ordnername wie Anime oder neuer Name
-def RenameOrdner(Animename):
-    print("----Inhalt =-------------"+ inhalt + "-------------------------")
-    newOrdnerAnimename = input("Ordnername wie AktuellerOrdnername?: ")
-    if newOrdnerAnimename == "j" or newOrdnerAnimename == "" or newOrdnerAnimename == "J":
-        Animename = inhalt
-        os.rename(path+"\\" + inhalt, path+"\\" + inhalt)
-    elif newOrdnerAnimename == "n" or newOrdnerAnimename == "N":
-        newOrdnerAnimename = input("Ordnername wie AnimeName?: ")
-        if newOrdnerAnimename == "j" or newOrdnerAnimename == "" or newOrdnerAnimename == "J":
-            os.rename(path+"\\" + inhalt, path+"\\" + Animename)
-        elif newOrdnerAnimename == "n" or newOrdnerAnimename == "N":
-            Animename = input("\nNeuer Ordnername: ""\n")
-            os.rename(path+"\\" + inhalt, path+"\\" + Animename)
-    return(Animename)
+
 #do do : Log file erstellen, speichere jeden Ordnername der erfolgreich # war in den Log file. 
 # Verlgeiche bei jeder neu ausführung welche ordner schon gemacht sind anhand des Log files
 
@@ -120,6 +105,7 @@ if os.path.exists(path) == True:
             Animename = KillSpezialBuchtaben(Animename)
             AnimeType = TagSource()
             Gruppe = finde_groupname(os.path.join(path, inhalt), SourceList,path_text)
+            #Baut eine Dic mit ursprüglicher name folge name neuer Name
             Animename = Findname(os.path.join(path, inhalt),Gruppe, Animename, AnimeType, SourceList)
-            Animename = RenameOrdner(Animename)
+            Animename = RenameOrdner(os.path.join(path, inhalt),Animename, inhalt)
             SaveLogFile(Animename)

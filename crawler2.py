@@ -16,7 +16,19 @@ from Ordnername import Ordnername
 from makethemagic import makethemagic
 
                                        
+import tkinter as tk
+from tkinter import filedialog
 
+def select_path():
+    root = tk.Tk()
+    root.withdraw()  # Verstecke das Hauptfenster
+
+    path = filedialog.askdirectory(title="Pfad auswählen")  # Öffne den Datei-Dialog zum Auswählen eines Ordners
+    root.destroy()  # Schließe das Hauptfenster
+    return path
+
+# Beispielaufruf
+spath = select_path()
       
 
 def TagSource():
@@ -71,11 +83,6 @@ SourceList = [
     ".webm"]
 
 
-    
-#path = "C:\\Users\\D1sk\\Desktop\\xxxxxxx\\sss\\TestOrdner"
-#EndungOrdner = input ("\nEndung eintragen: ")
-#jpg = input("Sollen die JPG und png gelöscht werden, dann Tippe\n für Ja: J oder Enter\n für Nein: n\n...  ")
-#path = input("\nPfad des Main Ordner eingeben der durchsucht werden soll: ""\n")
 path = r"C:\Users\admin\Desktop\Test"
 Gruppe = []
   
@@ -95,9 +102,10 @@ if os.path.exists(path) == True:
             delete_images(os.path.join(path, inhalt))
             delete_ordner(os.path.join(path, inhalt))
             folder_name = Ordnername(inhalt)
+            #Baut eine Dic mit ursprüglicher name folge name neuer Name 
+            Animename = Findname(os.path.join(path, inhalt),folder_name, SourceList)
             AnimeType = TagSource()
             Gruppe = finde_groupname(os.path.join(path, inhalt), SourceList,path_text)
-            #Baut eine Dic mit ursprüglicher name folge name neuer Name
-            Animename = Findname(os.path.join(path, inhalt),folder_name, SourceList)
+              
             makethemagic(os.path.join(path, inhalt),folder_name, AnimeType, Animename,Gruppe,inhalt)
             SaveLogFile(Animename)

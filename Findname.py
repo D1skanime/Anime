@@ -83,4 +83,4 @@ def find_folge_nummer(filename):
     if match:
         folge_nummer = match.group(1)[::-1]
         return folge_nummer
-    return ""
+    return 0

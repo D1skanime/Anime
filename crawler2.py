@@ -12,7 +12,8 @@ from delete_images import delete_images
 from delete_ordner import delete_ordner
 from finde_groupname import finde_groupname
 from Findname import Findname
-from RenameOrdner import RenameOrdner
+from Ordnername import Ordnername
+from makethemagic import makethemagic
 
                                        
 
@@ -22,14 +23,7 @@ def TagSource():
     SourceAnimeType = input("Serie: S0x\nBonus : B0x\n OVA : OVA0x\n TV-Spezial : TS0x\n AMV : AMV0x\n WEB: WEB0x\n Film: Enter \n:  ")
     return SourceAnimeType
 
-def KillSpezialBuchtaben(Animename):
-    for SonderZeichen in SonderzeichenListe:
-        if(Animename.find(SonderZeichen)) !=-1:
-            if SonderZeichen =="?":
-                Animename = Animename.replace(SonderZeichen, "!")
-            else:    
-                Animename = Animename.replace(SonderZeichen, "")
-        return Animename
+
 
   
 
@@ -76,7 +70,7 @@ SourceList = [
     ".mpg",
     ".webm"]
 
-SonderzeichenListe = ["/","?","*","<",">","''","|",":"]
+
     
 #path = "C:\\Users\\D1sk\\Desktop\\xxxxxxx\\sss\\TestOrdner"
 #EndungOrdner = input ("\nEndung eintragen: ")
@@ -100,12 +94,10 @@ if os.path.exists(path) == True:
            # Ordnerinhalt lesen und Bilder löschen
             delete_images(os.path.join(path, inhalt))
             delete_ordner(os.path.join(path, inhalt))
-            Animename = input("---------------------------------------------\n Geben Sie den Animename des Animes: " )
-            #Dodo Funktion die den Ainme auf : ? # überprüft und aus löscht oder ersetzt
-            Animename = KillSpezialBuchtaben(Animename)
+            folder_name = Ordnername(inhalt)
             AnimeType = TagSource()
             Gruppe = finde_groupname(os.path.join(path, inhalt), SourceList,path_text)
             #Baut eine Dic mit ursprüglicher name folge name neuer Name
-            Animename = Findname(os.path.join(path, inhalt),Gruppe, Animename, AnimeType, SourceList)
-            Animename = RenameOrdner(os.path.join(path, inhalt),Animename, inhalt)
+            Animename = Findname(os.path.join(path, inhalt),folder_name, SourceList)
+            makethemagic(os.path.join(path, inhalt),folder_name, AnimeType, Animename,Gruppe,inhalt)
             SaveLogFile(Animename)

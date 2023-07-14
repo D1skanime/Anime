@@ -3,20 +3,20 @@ import re
 import shutil
 import tkinter as tk
 
-def Findname(path, Gruppe, Animename, AnimeType, SourceList):
+def Findname(path, Animename, SourceList):
     Files = os.listdir(path)
     Videofiles = {}
     for File in Files:
         VideoSourcetype = Source(File, SourceList)
         if VideoSourcetype:
+            Videofiles[File] = [Animename]
             folge_nummer = find_folge_nummer(File)
-            folge_name = File
-            Videofiles[File] = folge_nummer
+            Videofiles[File].append(folge_nummer)
             print(File, "-------", folge_nummer)
     
     if VideoSourcetype:
         updated_files = create_gui(Files, Videofiles)
-    return update_video_files(updated_files, Animename)
+    return updated_files
 
 
 def create_gui(Files, Videofiles):
@@ -26,17 +26,17 @@ def create_gui(Files, Videofiles):
 
     # Funktion zum Speichern der neuen Folgennummern
     def save_changes():
-        for i, file in enumerate(Files):
+        for i, file in enumerate(sorted(Videofiles, key=lambda x: int(Videofiles[x][1]))):
             new_folge_nummer = entry_boxes[i].get()
-            if new_folge_nummer != Videofiles[file]:
-                Videofiles[file] = new_folge_nummer
-            root.destroy()  # GUI schließen    
+            if new_folge_nummer != Videofiles[file][1]:
+                Videofiles[file][1] = new_folge_nummer
+        root.destroy()  # GUI schließen  
 
     # Textlabels und Entry-Boxes erstellen
     entry_boxes = []
-    for i, file in enumerate(Files):
+    for file in sorted(Videofiles, key=lambda x: int(Videofiles[x][1])):
         folge_name = file
-        folge_nummer = Videofiles[file]
+        folge_nummer = Videofiles[file][1]
 
         label = tk.Label(root, text=folge_name)
         label.pack()
@@ -55,15 +55,6 @@ def create_gui(Files, Videofiles):
     root.mainloop()
     return Videofiles
 
-def update_video_files(updated_files, Animename):
-    updated_videofiles = {}
-
-    # Folgennamen im Dictionary mit Animename aktualisieren und neue Werte speichern
-    for file, folge_nummer in updated_files.items():
-        new_file = file.replace(Animename, folge_nummer)
-        updated_videofiles[file] = (folge_nummer, new_file)
-
-    return updated_videofiles
 
 def Source(filename, SourceList):
     for source in SourceList:

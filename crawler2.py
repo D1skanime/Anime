@@ -11,9 +11,10 @@ from tkinter import messagebox
 from delete_images import delete_images
 from delete_ordner import delete_ordner
 from finde_groupname import finde_groupname
-from Findname import Findname
+from findname import findname
 from Ordnername import Ordnername
 from makethemagic import makethemagic
+from tag_source import tag_source
 
                                        
 import tkinter as tk
@@ -30,21 +31,12 @@ def select_path():
 # Beispielaufruf
 spath = select_path()
       
-
-def TagSource():
-    SourceAnimeType = input("Serie: S0x\nBonus : B0x\n OVA : OVA0x\n TV-Spezial : TS0x\n AMV : AMV0x\n WEB: WEB0x\n Film: Enter \n:  ")
-    return SourceAnimeType
-
-
-
-  
-
 #do do : Log file erstellen, speichere jeden Ordnername der erfolgreich # war in den Log file. 
 # Verlgeiche bei jeder neu ausführung welche ordner schon gemacht sind anhand des Log files
 
-def SaveLogFile(Animename):
+def SaveLogFile(folder_name):
     Animetexteintragneu = open(PathvonLogDatei, "a")
-    Animetexteintragneu.write("\n" + Animename)
+    Animetexteintragneu.write("\n" + folder_name)
     Animetexteintragneu.close()
     return
 
@@ -102,10 +94,10 @@ if os.path.exists(path) == True:
             delete_images(os.path.join(path, inhalt))
             delete_ordner(os.path.join(path, inhalt))
             folder_name = Ordnername(inhalt)
+            AnimeType = tag_source()
             #Baut eine Dic mit ursprüglicher name folge name neuer Name 
-            Animename = Findname(os.path.join(path, inhalt),folder_name, SourceList)
-            AnimeType = TagSource()
+            Animename = findname(os.path.join(path, inhalt),folder_name, SourceList)
             Gruppe = finde_groupname(os.path.join(path, inhalt), SourceList,path_text)
               
-            makethemagic(os.path.join(path, inhalt),folder_name, AnimeType, Animename,Gruppe,inhalt)
-            SaveLogFile(Animename)
+            folder_name =makethemagic(os.path.join(path, inhalt),folder_name, AnimeType, Animename,Gruppe,inhalt)
+            SaveLogFile(folder_name)

@@ -1,78 +1,96 @@
-import tkinter as tk
-from tkinter import messagebox
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QCheckBox, QListWidget, QMessageBox
+from PyQt5.QtGui import QFont
+from PyQt5 import QtCore
 import glob
 import os
 
 
 def delete_images(folder_path):
     print("\nAktueller Ordner:", folder_path)
-    image_extensions = ["jpg", "png", "gif", "bif", "nfo"]
+    image_extensions = ["jpg", "png", "gif", "bif", "nfo", "txt"]
     image_files = []
     for extension in image_extensions:
         image_files.extend(glob.glob(folder_path + "/*." + extension))
 
     if not image_files:
-        messagebox.showinfo("Keine Dateien gefunden", "Es wurden keine JPG- und PNG-Dateien gefunden.")
         return
 
-    root = tk.Tk()
-    root.title("Bilder löschen")
-    root.geometry("600x500")
+    class DeleteImagesGUI(QWidget):
+        def __init__(self):
+            super().__init__()
+            self.setWindowTitle("Bilder löschen")
+            self.setGeometry(100, 100, 600, 500)
 
-    label = tk.Label(root, text="Gefundene Dateien:")
-    label.pack(pady=10)
+            layout = QVBoxLayout()
 
-    checkbox_frame = tk.Frame(root)
-    checkbox_frame.pack(pady=10)
+            label = QLabel("Gefundene Dateien:")
+            layout.addWidget(label)
+            layout.setSpacing(10)
 
-    checkboxes = []
-    selected_extensions = []
+            checkbox_frame = QWidget()
+            checkbox_layout = QVBoxLayout(checkbox_frame)
+            checkboxes = []
+            selected_extensions = []
 
-    def toggle_extension(extension):
-        if extension in selected_extensions:
-            selected_extensions.remove(extension)
-        else:
-            selected_extensions.append(extension)
+            def toggle_extension(extension):
+                if extension in selected_extensions:
+                    selected_extensions.remove(extension)
+                else:
+                    selected_extensions.append(extension)
 
-    for extension in image_extensions:
-        if any(file.endswith("." + extension) for file in image_files):
-            checkbox = tk.Checkbutton(checkbox_frame, text=extension, command=lambda ext=extension: toggle_extension(ext))
-            checkbox.pack(side=tk.LEFT)
-            checkboxes.append(checkbox)
+            for extension in image_extensions:
+                if any(file.endswith("." + extension) for file in image_files):
+                    checkbox = QCheckBox(extension)
+                    checkbox.stateChanged.connect(lambda state, ext=extension: toggle_extension(ext))
+                    checkbox_layout.addWidget(checkbox)
+                    checkboxes.append(checkbox)
 
-    listbox = tk.Listbox(root, selectmode=tk.MULTIPLE)
-    listbox.pack(fill=tk.BOTH, expand=True)
-    for file in image_files:
-        listbox.insert(tk.END, file)
+            layout.addWidget(checkbox_frame)
 
-   
-    # Funktion zum löschen und anzeigen
-    def delete_selected():
-        selected_indices = listbox.curselection()
-        selected_files = [image_files[index] for index in selected_indices]
-        
-        if selected_files or selected_extensions:
-            if selected_extensions:
-                for file in image_files:
-                    file_extension = os.path.splitext(file)[1][1:].lower()
-                    if file_extension in selected_extensions:
+            list_widget = QListWidget()
+            list_widget.setSelectionMode(QListWidget.MultiSelection)
+            layout.addWidget(list_widget)
+            for file in image_files:
+                list_widget.addItem(file)
+
+            delete_button = QPushButton("Ausgewählte löschen")
+            delete_button.clicked.connect(self.delete_selected)
+            layout.addWidget(delete_button)
+
+            self.setLayout(layout)
+
+            self.selected_files = []
+            self.selected_extensions = selected_extensions
+            self.list_widget = list_widget
+
+        def delete_selected(self):
+            selected_items = self.list_widget.selectedItems()
+            self.selected_files = [item.text() for item in selected_items]
+
+            if self.selected_files or self.selected_extensions:
+                if self.selected_extensions:
+                    for file in image_files:
+                        file_extension = os.path.splitext(file)[1][1:].lower()
+                        if file_extension in self.selected_extensions:
+                            try:
+                                os.remove(file)
+                                self.list_widget.takeItem(self.list_widget.row(self.list_widget.findItems(file, QtCore.Qt.MatchExactly)[0]))
+                            except OSError as e:
+                                QMessageBox.critical(None, "Fehler beim Löschen", f"Fehler beim Löschen der Datei {file}: {e.strerror}")
+                elif self.selected_files:
+                    for file in self.selected_files:
                         try:
                             os.remove(file)
-                            listbox.delete(listbox.get(0, tk.END).index(file))
+                            self.list_widget.takeItem(self.list_widget.row(self.list_widget.findItems(file, QtCore.Qt.MatchExactly)[0]))
                         except OSError as e:
-                            messagebox.showerror("Fehler beim Löschen", f"Fehler beim Löschen der Datei {file}: {e.strerror}")
-            elif selected_files:
-                for file in selected_files:
-                    try:
-                        os.remove(file)
-                        listbox.delete(listbox.get(0, tk.END).index(file))
-                    except OSError as e:
-                        messagebox.showerror("Fehler beim Löschen", f"Fehler beim Löschen der Datei {file}: {e.strerror}")
-        
-        root.destroy()
+                            QMessageBox.critical(None, "Fehler beim Löschen", f"Fehler beim Löschen der Datei {file}: {e.strerror}")
 
-    delete_button = tk.Button(root, text="Ausgewählte löschen", command=delete_selected)
-    delete_button.pack(pady=10)
+            self.close()
 
-    root.mainloop()
-    return
+    app = QApplication(sys.argv)
+    gui = DeleteImagesGUI()
+    gui.show()
+    app.exec_()
+
+    return gui.selected_files, gui.selected_extensions

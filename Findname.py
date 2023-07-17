@@ -1,66 +1,78 @@
 import os
 import re
 import shutil
-import tkinter as tk
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QLineEdit
 
-def Findname(path, Animename, SourceList):
-    Files = os.listdir(path)
-    Videofiles = {}
-    for File in Files:
-        VideoSourcetype = Source(File, SourceList)
-        if VideoSourcetype:
-            Videofiles[File] = [Animename]
-            folge_nummer = find_folge_nummer(File)
-            Videofiles[File].append(folge_nummer)
-            print(File, "-------", folge_nummer)
+
+class FolgenlisteGUI(QWidget):
+    def __init__(self, files, videofiles):
+        super().__init__()
+        self.setWindowTitle("Folgenliste")
+        
+        layout = QVBoxLayout()
+        
+        self.entry_boxes = []
+        for file in sorted(videofiles, key=lambda x: int(videofiles[x][1])):
+            folge_name = file
+            folge_nummer = videofiles[file][1]
+
+            label = QLabel(folge_name)
+            layout.addWidget(label)
+
+            entry_box = QLineEdit()
+            entry_box.setText(folge_nummer)
+            layout.addWidget(entry_box)
+
+            self.entry_boxes.append(entry_box)
+
+        save_button = QPushButton("OK")
+        save_button.clicked.connect(self.save_changes)
+        layout.addWidget(save_button)
+
+        self.setLayout(layout)
+        self.files = files
+        self.videofiles = videofiles
+
+    def save_changes(self):
+        for i, file in enumerate(sorted(self.videofiles, key=lambda x: int(self.videofiles[x][1]))):
+            new_folge_nummer = self.entry_boxes[i].text()
+            if new_folge_nummer != self.videofiles[file][1]:
+                self.videofiles[file][1] = new_folge_nummer
+        self.close()
+
+
+def findname(path, animename, sourcelist):
+    files = os.listdir(path)
+    videofiles = {}
+    for file in files:
+        video_sourcetype = source(file, sourcelist)
+        if video_sourcetype:
+            videofiles[file] = [animename]
+            folge_nummer = find_folge_nummer(file)
+            videofiles[file].append(folge_nummer)
+            print(file, "-------", folge_nummer)
     
-    if VideoSourcetype:
-        updated_files = create_gui(Files, Videofiles)
+    if video_sourcetype:
+        updated_files = create_gui(files, videofiles)
     return updated_files
 
 
-def create_gui(Files, Videofiles):
-    # GUI erstellen
-    root = tk.Tk()
-    root.title("Folgenliste")
-
-    # Funktion zum Speichern der neuen Folgennummern
-    def save_changes():
-        for i, file in enumerate(sorted(Videofiles, key=lambda x: int(Videofiles[x][1]))):
-            new_folge_nummer = entry_boxes[i].get()
-            if new_folge_nummer != Videofiles[file][1]:
-                Videofiles[file][1] = new_folge_nummer
-        root.destroy()  # GUI schließen  
-
-    # Textlabels und Entry-Boxes erstellen
-    entry_boxes = []
-    for file in sorted(Videofiles, key=lambda x: int(Videofiles[x][1])):
-        folge_name = file
-        folge_nummer = Videofiles[file][1]
-
-        label = tk.Label(root, text=folge_name)
-        label.pack()
-
-        entry_box = tk.Entry(root)
-        entry_box.insert(tk.END, folge_nummer)
-        entry_box.pack()
-
-        entry_boxes.append(entry_box)
-
-    # Button zum Speichern der Änderungen
-    save_button = tk.Button(root, text="OK", command=save_changes)
-    save_button.pack()
-
-    # GUI starten
-    root.mainloop()
-    return Videofiles
+def create_gui(files, videofiles):
+    app = QApplication(sys.argv)
+    gui = FolgenlisteGUI(files, videofiles)
+    gui.show()
+    app.exec_()
+    
+    return gui.videofiles
 
 
-def Source(filename, SourceList):
-    for source in SourceList:
+def source(filename, sourcelist):
+    for source in sourcelist:
         if filename.lower().endswith(source):
             return source
     return None
+
 
 def find_folge_nummer(filename):
     # Muster SxxExx

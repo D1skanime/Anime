@@ -55,11 +55,13 @@ def findname(path, animename, sourcelist):
     
     if video_sourcetype:
         updated_files = create_gui(files, videofiles)
-    return updated_files
+        return updated_files
 
 
 def create_gui(files, videofiles):
-    app = QApplication(sys.argv)
+    app = QApplication.instance()  # Versuchen Sie, eine vorhandene QApplication-Instanz abzurufen
+    if app is None:  # Wenn keine vorhanden ist, erstellen Sie eine neue
+        app = QApplication(sys.argv)
     gui = FolgenlisteGUI(files, videofiles)
     gui.show()
     app.exec_()
@@ -96,3 +98,8 @@ def find_folge_nummer(filename):
         folge_nummer = match.group(1)[::-1]
         return folge_nummer
     return 0
+
+    app = QApplication(sys.argv)
+    gui = FolgenlisteGUI(os.listdir(path), videofiles)
+    gui.show()
+    sys.exit(app.exec_())

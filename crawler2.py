@@ -23,13 +23,21 @@ from tkinter import filedialog
 def select_path():
     root = tk.Tk()
     root.withdraw()  # Verstecke das Hauptfenster
-
     path = filedialog.askdirectory(title="Pfad auswählen")  # Öffne den Datei-Dialog zum Auswählen eines Ordners
     root.destroy()  # Schließe das Hauptfenster
     return path
 
+def select_file_path(title):
+    root = tk.Tk()
+    root.withdraw()
+    file_path = filedialog.askopenfilename(title=title)
+    root.destroy()
+    return file_path
+
 # Beispielaufruf
-spath = select_path()
+path = select_path()
+PathvonLogDatei = select_file_path("Log-Datei auswählen")
+path_text = select_file_path("Gruppen-Textdatei auswählen")
       
 #do do : Log file erstellen, speichere jeden Ordnername der erfolgreich # war in den Log file. 
 # Verlgeiche bei jeder neu ausführung welche ordner schon gemacht sind anhand des Log files
@@ -46,7 +54,6 @@ def OpenLogFile(PathvonLogDatei):
         Animetexteintrag = [_.rstrip('\n') for _ in f]
     return(Animetexteintrag)
     
-
 SourceList = [
     ".mp4",
     ".mov",
@@ -74,14 +81,10 @@ SourceList = [
     ".mpg",
     ".webm"]
 
-
-path = r"C:\Users\admin\Desktop\Test"
 Gruppe = []
   
 if os.path.exists(path) == True:
     #Ordnerinhalt aufliste
-    PathvonLogDatei = r'C:\Users\admin\Desktop\Animelog.txt'
-    path_text = r"C:\Users\admin\Desktop\Gruppen.txt"
     #Lof file öffnen
     Animetexteintragzumvergleich = OpenLogFile(PathvonLogDatei)
     Inhalte = os.listdir(path)
@@ -94,10 +97,10 @@ if os.path.exists(path) == True:
             delete_images(os.path.join(path, inhalt))
             delete_ordner(os.path.join(path, inhalt))
             folder_name = Ordnername(inhalt)
-            AnimeType = tag_source()
             #Baut eine Dic mit ursprüglicher name folge name neuer Name 
             Animename = findname(os.path.join(path, inhalt),folder_name, SourceList)
             Gruppe = finde_groupname(os.path.join(path, inhalt), SourceList,path_text)
-              
+            AnimeType = tag_source()
+            print(AnimeType)
             folder_name =makethemagic(os.path.join(path, inhalt),folder_name, AnimeType, Animename,Gruppe,inhalt)
             SaveLogFile(folder_name)

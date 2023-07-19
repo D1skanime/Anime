@@ -2,8 +2,7 @@ import os
 import re
 import shutil
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QLineEdit
-
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QLineEdit, QMessageBox
 
 class FolgenlisteGUI(QWidget):
     def __init__(self, files, videofiles):
@@ -37,8 +36,17 @@ class FolgenlisteGUI(QWidget):
     def save_changes(self):
         for i, file in enumerate(sorted(self.videofiles, key=lambda x: int(self.videofiles[x][1]))):
             new_folge_nummer = self.entry_boxes[i].text()
-            if new_folge_nummer != self.videofiles[file][1]:
-                self.videofiles[file][1] = new_folge_nummer
+            try:
+                nummer = int(new_folge_nummer)
+                if 0 <= nummer <= 999:
+                    if new_folge_nummer != self.videofiles[file][1]:
+                        self.videofiles[file][1] = new_folge_nummer
+                else:
+                    QMessageBox.critical(self, "Ungültige Eingabe", "Die Folgennummer muss eine ganze Zahl zwischen 0 und 999 sein.")
+                    return
+            except ValueError:
+                QMessageBox.critical(self, "Ungültige Eingabe", "Die Folgennummer muss eine ganze Zahl sein.")
+                return
         self.close()
 
 
@@ -52,16 +60,14 @@ def findname(path, animename, sourcelist):
             folge_nummer = find_folge_nummer(file)
             videofiles[file].append(folge_nummer)
             print(file, "-------", folge_nummer)
-    
+
     if video_sourcetype:
         updated_files = create_gui(files, videofiles)
         return updated_files
 
 
 def create_gui(files, videofiles):
-    app = QApplication.instance()  # Versuchen Sie, eine vorhandene QApplication-Instanz abzurufen
-    if app is None:  # Wenn keine vorhanden ist, erstellen Sie eine neue
-        app = QApplication(sys.argv)
+    app = get_application_instance()
     gui = FolgenlisteGUI(files, videofiles)
     gui.show()
     app.exec_()
@@ -99,7 +105,13 @@ def find_folge_nummer(filename):
         return folge_nummer
     return 0
 
-    app = QApplication(sys.argv)
-    gui = FolgenlisteGUI(os.listdir(path), videofiles)
-    gui.show()
-    sys.exit(app.exec_())
+def get_application_instance():
+    app = QApplication.instance()  # Versuchen Sie, eine vorhandene QApplication-Instanz abzurufen
+    if app is None:  # Wenn keine vorhanden ist, erstellen Sie eine neue
+        app = QApplication(sys.argv)
+    return app
+
+if __name__ == "__main__":
+    # Hier sollte der Code aufgerufen werden, indem der entsprechende Pfad und die SourceListe übergeben werden.
+    # Beispiel: findname("Pfad_zum_Verzeichnis", "Animename", [".mp4", ".mkv"])
+    pass

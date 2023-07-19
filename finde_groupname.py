@@ -58,10 +58,6 @@ def finde_groupname(path, SourceList, path_text):
     for file in Videofiles:
         # Überprüfe, ob die Datei eine Videodatei ist
         if any(file.lower().endswith(ext) for ext in SourceList):
-            # Extrahiere den Gruppennamen aus dem Dateinamen
-            print("------------------------------------------")
-            print("\n".join(Videofiles))
-            print("\n""------------------------------------------")
             match = re.search(r"^\[(.*?)\]|(?<=-)[A-Za-z0-9_-]+(?=\.)", file)
             if match:
                 Gruppename = match.group(0)
@@ -75,3 +71,6 @@ def finde_groupname(path, SourceList, path_text):
                 create_gui(text_data)
                 app.exec_()
                 return "-" + result
+
+    # Wenn keine passende Videodatei gefunden wurde
+    return ""

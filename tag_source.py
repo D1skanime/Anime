@@ -57,16 +57,20 @@ class TagSourceGUI(QWidget):
             else:
                 self.formatted_value = 'S' + str(counter_value)
                 
-
-        
         self.ok_clicked.emit()
-        
         
 
 def tag_source():
-    app = QApplication(sys.argv)
+    app = QApplication.instance()  # Versuchen Sie, eine vorhandene QApplication-Instanz abzurufen
+    if app is None:  # Wenn keine vorhanden ist, erstellen Sie eine neue
+        app = QApplication(sys.argv)
     gui = TagSourceGUI()
     gui.ok_clicked.connect(app.exit)
     gui.show()
     app.exec_()
     return gui.formatted_value, gui.selected_value
+
+if __name__ == "__main__":
+    # Hier sollte der Code aufgerufen werden, indem die Funktion tag_source() aufgerufen wird.
+    # Beispiel: formatted_value, selected_value = tag_source()
+    pass

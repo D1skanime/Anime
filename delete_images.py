@@ -14,6 +14,7 @@ def delete_images(folder_path):
         image_files.extend(glob.glob(folder_path + "/*." + extension))
 
     if not image_files:
+        print("Keine Bilder im angegebenen Ordner gefunden.")
         return
 
     class DeleteImagesGUI(QWidget):
@@ -69,22 +70,22 @@ def delete_images(folder_path):
             self.selected_files = [item.text() for item in selected_items]
 
             if self.selected_files or self.selected_extensions:
-                if self.selected_extensions:
-                    for file in image_files:
-                        file_extension = os.path.splitext(file)[1][1:].lower()
-                        if file_extension in self.selected_extensions:
-                            try:
+                try:
+                    if self.selected_extensions:
+                        for file in image_files:
+                            file_extension = os.path.splitext(file)[1][1:].lower()
+                            if file_extension in self.selected_extensions:
                                 os.remove(file)
                                 self.list_widget.takeItem(self.list_widget.row(self.list_widget.findItems(file, QtCore.Qt.MatchExactly)[0]))
-                            except OSError as e:
-                                QMessageBox.critical(None, "Fehler beim Löschen", f"Fehler beim Löschen der Datei {file}: {e.strerror}")
-                elif self.selected_files:
-                    for file in self.selected_files:
-                        try:
+                    elif self.selected_files:
+                        for file in self.selected_files:
                             os.remove(file)
                             self.list_widget.takeItem(self.list_widget.row(self.list_widget.findItems(file, QtCore.Qt.MatchExactly)[0]))
-                        except OSError as e:
-                            QMessageBox.critical(None, "Fehler beim Löschen", f"Fehler beim Löschen der Datei {file}: {e.strerror}")
+
+                except OSError as e:
+                    error_message = f"Fehler beim Löschen der Datei {file}: {e.strerror}"
+                    QMessageBox.critical(None, "Fehler beim Löschen", error_message)
+                    print(error_message)
 
             self.close()
 
@@ -92,5 +93,12 @@ def delete_images(folder_path):
     gui = DeleteImagesGUI()
     gui.show()
     app.exec_()
+    return
 
-    return gui.selected_files, gui.selected_extensions
+
+if __name__ == "__main__":
+    path = "Pfad zum Ordner, in dem die Bilder gelöscht werden sollen"
+    if not os.path.exists(path):
+        print(f"Der angegebene Pfad '{path}' existiert nicht.")
+    else:
+        delete_images(path)

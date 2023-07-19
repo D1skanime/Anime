@@ -1,6 +1,6 @@
 import re
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QLineEdit
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QLineEdit, QMessageBox
 
 
 class FolderNameGUI(QWidget):
@@ -22,8 +22,9 @@ class FolderNameGUI(QWidget):
         new_text = self.entry.text().strip()
         if new_text:
             self.new_folder_name = new_text
-        self.close()
-        app.exit()  # app.exit() in der richtigen Funktion aufrufen
+            self.close()
+        else:
+            QMessageBox.warning(self, "Eingabefehler", "Bitte geben Sie einen gültigen Ordnername ein.")
 
 def load_gui_and_get_folder_name(inhalt):
     app = QApplication(sys.argv)
@@ -37,7 +38,11 @@ SonderzeichenListe = ["/", "?", "*", "<", ">", "'", "|", ":"]
 
 def Ordnername(inhalt):
     newOrdnerAnimename = load_gui_and_get_folder_name(inhalt)
+    if not newOrdnerAnimename:
+        raise ValueError("Ungültiger Ordnername: Der eingegebene Name ist leer.")
+    
     for SonderZeichen in SonderzeichenListe:
         newOrdnerAnimename = newOrdnerAnimename.replace(SonderZeichen, "!" if SonderZeichen == "?" else "")
     return newOrdnerAnimename
+
 

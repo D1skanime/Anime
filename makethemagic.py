@@ -8,19 +8,19 @@ class RenameDialog(QObject):
     name_entered = pyqtSignal(str)
 
     def get_new_name(self, default_name):
-        app = QApplication.instance()  # Versuche, eine bereits erstellte QApplication-Instanz zu erhalten
-        if app is None:  # Wenn keine Instanz vorhanden ist, erstelle eine neue
-            app = QApplication(sys.argv)
-
+        app = get_application_instance()
         new_name, ok = QInputDialog.getText(None, "Datei existiert bereits", "Neuer Dateiname:", QLineEdit.Normal, default_name)
         if ok:
             self.name_entered.emit(new_name)
 
-def makethemagic(path, folder_name, AnimeType, Animename, Gruppe, inhalt):
-    app = QApplication.instance()  # Versuche, eine bereits erstellte QApplication-Instanz zu erhalten
-    if app is None:  # Wenn keine Instanz vorhanden ist, erstelle eine neue
+def get_application_instance():
+    app = QApplication.instance()
+    if app is None:
         app = QApplication(sys.argv)
+    return app
 
+def makethemagic(path, folder_name, AnimeType, Animename, Gruppe, inhalt):
+    app = get_application_instance()
     rename_dialog = RenameDialog()
     new_name = None
 
@@ -29,7 +29,7 @@ def makethemagic(path, folder_name, AnimeType, Animename, Gruppe, inhalt):
         if os.path.isfile(folge_pfad):
             folge_name, folge_ext = os.path.splitext(folge)
             if folge in Animename:
-                new_name = Animename.get(folge, ['']) [0]
+                new_name = Animename.get(folge, [''])[0]
                 # Überprüfung, ob einer der beiden Werte leer ist
                 if "" not in AnimeType:
                     # BONUS,OVA ONA WEB Spezial
@@ -45,7 +45,10 @@ def makethemagic(path, folder_name, AnimeType, Animename, Gruppe, inhalt):
                     rename_dialog.get_new_name(neue_folge_name)
                     new_name = None  # Warten auf Benutzerantwort
                 else:
-                    os.rename(folge_pfad, neue_folge_pfad)
+                    try:
+                        os.rename(folge_pfad, neue_folge_pfad)
+                    except OSError as e:
+                        QMessageBox.critical(None, "Fehler beim Umbenennen", f"Fehler beim Umbenennen von {folge}: {e.strerror}")
    
     if folder_name != inhalt:
         # Überprüfen, ob im 'path' ein Ordner existiert, der genau den Namen 'folder_name' hat
@@ -55,9 +58,19 @@ def makethemagic(path, folder_name, AnimeType, Animename, Gruppe, inhalt):
                 source_file = os.path.join(path, file_name)
                 destination_file = os.path.join(existing_folder_path, file_name)
                 if os.path.isfile(source_file) and os.path.isfile(destination_file):
-                    shutil.copyfile(source_file, destination_file)  # Daten überschreiben
-            shutil.rmtree(path)  # Ursprünglichen Ordner löschen
+                    try:
+                        shutil.copyfile(source_file, destination_file)  # Daten überschreiben
+                    except OSError as e:
+                        QMessageBox.critical(None, "Fehler beim Kopieren", f"Fehler beim Kopieren von {source_file}: {e.strerror}")
+            try:
+                shutil.rmtree(path)  # Ursprünglichen Ordner löschen
+            except OSError as e:
+                QMessageBox.critical(None, "Fehler beim Löschen", f"Fehler beim Löschen des Ordners {path}: {e.strerror}")
         else:
             new_inhalt_folder_path = os.path.join(os.path.dirname(path), folder_name)
-            os.rename(path, new_inhalt_folder_path)
+            try:
+                os.rename(path, new_inhalt_folder_path)
+            except OSError as e:
+                QMessageBox.critical(None, "Fehler beim Umbenennen", f"Fehler beim Umbenennen von {path}: {e.strerror}")
+
     return folder_name

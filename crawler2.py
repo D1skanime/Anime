@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog
+
+#Skripte
 from delete_images import delete_images
 from delete_ordner import delete_ordner
 from finde_groupname import finde_groupname
@@ -42,31 +44,32 @@ def main():
     if not os.path.exists(path):
         print(f"Der angegebene Pfad '{path}' existiert nicht.")
         return
+    
+    source_list = [
+        ".mp4", ".mov", ".avi", ".wmv", ".flv", ".mkv", ".webm", ".3gp", ".mpg", ".mpeg", ".rm", ".rmvb", ".vob",
+        ".m4v", ".ts", ".m2ts", ".f4v", ".divx", ".ogv", ".ogm", ".asf", ".mxf", ".flv", ".mpg", ".webm"
+    ]
 
     try:
         log_entries = open_log_file(PathvonLogDatei)
-        contents = os.listdir(path)
-        contents = list(set(contents) - set(log_entries))
+        contents = [item for item in os.listdir(path) if item not in log_entries]
         contents.sort() 
         for item in contents:
             item_path = os.path.join(path, item)
-            delete_images(item_path)
             delete_ordner(item_path)
+            delete_images(item_path)
+            animetype = tag_source()
             folder_name = Ordnername(item)
             animename = findname(item_path, folder_name, source_list)
+            print("Processing:", item_path)
+            print("Animation Name:", animename)
             gruppe = finde_groupname(item_path, source_list, path_text)
-            animetype = tag_source()
-            print(animetype)
+            print("Group Name:", gruppe)
             folder_name = makethemagic(item_path, folder_name, animetype, animename, gruppe, item)
             save_log_file(folder_name, PathvonLogDatei)
 
     except Exception as e:
         print("Ein Fehler ist aufgetreten:")
         print(str(e))
-
-if __name__ == "__main__":
-    source_list = [
-        ".mp4", ".mov", ".avi", ".wmv", ".flv", ".mkv", ".webm", ".3gp", ".mpg", ".mpeg", ".rm", ".rmvb", ".vob",
-        ".m4v", ".ts", ".m2ts", ".f4v", ".divx", ".ogv", ".ogm", ".asf", ".mxf", ".flv", ".mpg", ".webm"
-    ]
-    main()
+    
+main()

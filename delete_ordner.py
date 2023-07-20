@@ -13,6 +13,11 @@ def delete_all_ordner(Ordnerkill):
     return
 
 
+def has_subfolders(folder_path):
+    subfolders = [f.path for f in os.scandir(folder_path) if f.is_dir()]
+    return len(subfolders) > 0
+
+
 class DeleteFoldersGUI(QWidget):
     def __init__(self, folder_path):
         super().__init__()
@@ -25,10 +30,7 @@ class DeleteFoldersGUI(QWidget):
         label = QLabel(f"Ordner: {self.folder_path}")
         layout.addWidget(label)
 
-        subfolders = [f.path for f in os.scandir(self.folder_path) if f.is_dir()]
-        folder_contents = []
-        for folder in subfolders:
-            folder_contents.extend(os.listdir(folder))
+        folder_contents = os.listdir(self.folder_path)
         list_widget = QListWidget()
         list_widget.addItems(folder_contents)
         layout.addWidget(list_widget)
@@ -58,8 +60,12 @@ class DeleteFoldersGUI(QWidget):
 if __name__ == "__main__":
     folder_path = "Pfad zum Ordner, dessen Inhalte gelöscht werden sollen"
 else:
-    def delete_ordner(item_path):
-        app = QApplication([])
-        gui = DeleteFoldersGUI(item_path)
-        gui.show()
-        app.exec_()
+    def delete_ordner(folder_path):    
+
+        if has_subfolders(folder_path):
+            app = QApplication([])
+            gui = DeleteFoldersGUI(folder_path)
+            gui.show()
+            app.exec_()
+        else:
+            print("Es gibt keine Subfolger zum Löschen.")

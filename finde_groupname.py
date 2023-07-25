@@ -1,48 +1,63 @@
 import os
 import re
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QCheckBox, QPushButton, QLineEdit
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QCheckBox, QPushButton, QLineEdit
+from PyQt5.QtCore import pyqtSignal
 
-app = QApplication(sys.argv)
-window = QWidget()
-layout = QVBoxLayout()
-result = None
+app = QApplication.instance()
+if app is None:
+    app = QApplication([])
 
-def on_checkbox_click():
-    global result
-    selected_text = [text_data[i] for i, value in enumerate(checkbox_values) if value.isChecked()]
-    if selected_text:
-        gruppename = "-".join(selected_text)
-        window.close()
-        result = gruppename
-    else:
-        new_groupname = new_group_input.text()
-        if new_groupname:
-            window.close()
-            result = new_groupname
+class GruppnameGUI(QWidget):
+    ok_clicked = pyqtSignal()
+    closed = pyqtSignal()
+
+    def __init__(self, text_data, path_text):
+        super().__init__()
+        self.setWindowTitle("Gruppennamen auswählen")
+        self.setGeometry(100, 100, 400, 300)
+        self.text_data = text_data
+        self.path_text = path_text  # Neue Instanzattribut, um den Pfad zur Textdatei zu speichern
+
+        layout = QVBoxLayout()
+
+        self.checkbox_values = []
+        for text in self.text_data:
+            checkbox = QCheckBox(text)
+            self.checkbox_values.append(checkbox)
+            layout.addWidget(checkbox)
+
+        self.new_group_input = QLineEdit()
+        self.new_group_input.setPlaceholderText("Neuer Gruppenname")
+        layout.addWidget(self.new_group_input)
+
+        ok_button = QPushButton("OK")
+        ok_button.clicked.connect(self.on_ok_button_click)
+        layout.addWidget(ok_button)
+
+        self.setLayout(layout)
+        self.result = None   
+
+    def on_ok_button_click(self):
+        selected_text = [self.text_data[i] for i, value in enumerate(self.checkbox_values) if value.isChecked()]
+        if selected_text:
+            gruppename = "-".join(selected_text)
+            self.result = gruppename
         else:
-            window.close()
-            result = None
+            new_groupname = self.new_group_input.text()
+            if new_groupname:
+                self.result = new_groupname
+                # Neuer Gruppenname wird in die Textdatei geschrieben
+                with open(self.path_text, "a", encoding="cp1252") as file:
+                    file.write("\n" + new_groupname)
+            else:
+                self.result = None
 
-def create_gui(text_data):
-    for text in text_data:
-        checkbox = QCheckBox(text)
-        checkbox_values.append(checkbox)
-        layout.addWidget(checkbox)
+        self.ok_clicked.emit()
 
-    global new_group_input
-    new_group_input = QLineEdit()
-    new_group_input.setPlaceholderText("Neuer Gruppenname")
-    layout.addWidget(new_group_input)
-
-    ok_button = QPushButton("OK")
-    ok_button.clicked.connect(on_checkbox_click)
-    layout.addWidget(ok_button)
-
-    window.setLayout(layout)
-    window.show()
-
-checkbox_values = []
+    def closeEvent(self, event):
+        self.closed.emit()
+        event.accept()        
 
 def SaveGruppeName(Neuer_Gruppename_eintrag, path_text):
     with open(path_text, "a", encoding="cp1252") as Animetexteintragneu:
@@ -56,7 +71,6 @@ def finde_groupname(path, SourceList, path_text):
         text_data = [_.rstrip('\n') for _ in file]
 
     for file in Videofiles:
-        # Überprüfe, ob die Datei eine Videodatei ist
         if any(file.lower().endswith(ext) for ext in SourceList):
             match = re.search(r"^\[(.*?)\]|(?<=-)[A-Za-z0-9_-]+(?=\.)", file)
             if match:
@@ -68,9 +82,21 @@ def finde_groupname(path, SourceList, path_text):
                 else:
                     return "-" + Gruppename
             else:
-                create_gui(text_data)
+                gui = GruppnameGUI(text_data, path_text)
+                gui.ok_clicked.connect(gui.close)
+                gui.closed.connect(gui.close)
+                gui.show()
                 app.exec_()
-                return "-" + result
+                return "-" + gui.result
 
-    # Wenn keine passende Videodatei gefunden wurde
     return ""
+
+if __name__ == "__main__":
+    path = r"C:\Users\admin\Desktop\Test\Demon.Slayer.Kimetsu"
+    path_text = r"C:\Users\admin\Desktop\Gruppen.txt"
+    SourceList = ["mp4", "mkv"]
+    if not path:
+        print(f"Der angegebene Pfad '{path}' existiert nicht.")
+    else:
+        gruppe = finde_groupname(path, SourceList, path_text)
+        print(gruppe)

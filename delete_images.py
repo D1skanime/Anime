@@ -2,32 +2,55 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QCheckBox, QListWidget, QMessageBox
 from PyQt5.QtGui import QFont
 from PyQt5 import QtCore
+from app import app
 import glob
 import os
-
-
+import fnmatch
+									  											  											
 def delete_images(folder_path):
+
+    app = QApplication.instance()  # Versuchen Sie, eine vorhandene QApplication-Instanz abzurufen
+    if app is None:
+        app = QApplication([])  # Wenn keine vorhanden ist, erstellen Sie eine neue
+
     print("\nAktueller Ordner:", folder_path)
     image_extensions = ["jpg", "png", "gif", "bif", "nfo", "txt"]
     image_files = []
-    for extension in image_extensions:
-        image_files.extend(glob.glob(folder_path + "/*." + extension))
+    for root, _, files in os.walk(folder_path):
+        for extension in image_extensions:
+            for filename in fnmatch.filter(files, f"*.{extension}"):
+                image_files.append(os.path.join(root, filename))
+    image_files
 
     if not image_files:
         print("Keine Bilder im angegebenen Ordner gefunden.")
         return
 
     class DeleteImagesGUI(QWidget):
+        ok_clicked_deleteimages = QtCore.pyqtSignal()  # Signal für den Klick auf den "OK"-Button
+        closed = QtCore.pyqtSignal()      # Signal für das Schließen des Fensters
+
+        def closeEvent(self, event):
+                # Wird aufgerufen, wenn das Fenster geschlossen wird
+                self.closed.emit()
+                print("Das GUI-Fenster wurde geschlossen.")
+                event.accept()  # Bestätigen Sie das Ereignis, um das Fenster zu schließen    
+
         def __init__(self):
             super().__init__()
             self.setWindowTitle("Bilder löschen")
             self.setGeometry(100, 100, 600, 500)
+     
 
             layout = QVBoxLayout()
+																				 
 
             label = QLabel("Gefundene Dateien:")
             layout.addWidget(label)
+											   
+																								 
             layout.setSpacing(10)
+													   
 
             checkbox_frame = QWidget()
             checkbox_layout = QVBoxLayout(checkbox_frame)
@@ -48,19 +71,18 @@ def delete_images(folder_path):
                     checkboxes.append(checkbox)
 
             layout.addWidget(checkbox_frame)
+								
+									  
 
             list_widget = QListWidget()
             list_widget.setSelectionMode(QListWidget.MultiSelection)
             layout.addWidget(list_widget)
             for file in image_files:
                 list_widget.addItem(file)
-
             delete_button = QPushButton("Ausgewählte löschen")
             delete_button.clicked.connect(self.delete_selected)
             layout.addWidget(delete_button)
-
-            self.setLayout(layout)
-
+            self.setLayout(layout)													  
             self.selected_files = []
             self.selected_extensions = selected_extensions
             self.list_widget = list_widget
@@ -70,7 +92,7 @@ def delete_images(folder_path):
             self.selected_files = [item.text() for item in selected_items]
 
             if self.selected_files or self.selected_extensions:
-                try:
+                try:					 
                     if self.selected_extensions:
                         for file in image_files:
                             file_extension = os.path.splitext(file)[1][1:].lower()
@@ -86,18 +108,19 @@ def delete_images(folder_path):
                     error_message = f"Fehler beim Löschen der Datei {file}: {e.strerror}"
                     QMessageBox.critical(None, "Fehler beim Löschen", error_message)
                     print(error_message)
-
             self.close()
 
-    app = QApplication(sys.argv)
+           
+							
     gui = DeleteImagesGUI()
+    gui.ok_clicked_deleteimages.connect(gui.close)
+    gui.closed.connect(gui.close)
     gui.show()
     app.exec_()
     return
 
-
 if __name__ == "__main__":
-    path = "Pfad zum Ordner, in dem die Bilder gelöscht werden sollen"
+    path = r"C:\Users\admin\Desktop\Test\Demon.Slayer.Kimetsu"
     if not os.path.exists(path):
         print(f"Der angegebene Pfad '{path}' existiert nicht.")
     else:

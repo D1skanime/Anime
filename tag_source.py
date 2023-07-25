@@ -1,9 +1,12 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QComboBox, QSpinBox
 from PyQt5.QtCore import pyqtSignal
+from app import app
 
 class TagSourceGUI(QWidget):
     ok_clicked = pyqtSignal()
+    closed = pyqtSignal()
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("GUI")
@@ -16,7 +19,7 @@ class TagSourceGUI(QWidget):
         layout.addWidget(select_label)
         
         self.select_box = QComboBox()
-        self.select_box.addItems(["Serie", "AMV", "Film", "Web", "OVA", "ONA", "Tv-Special"])
+        self.select_box.addItems(["Serie", "Film", "Bonus", "OVA", "Web", "ONA", "Tv-Spezial","AMV"])
         self.select_box.setStyleSheet("background-color: white;")
         self.select_box.setCurrentIndex(0)
         layout.addWidget(self.select_box)
@@ -58,19 +61,26 @@ class TagSourceGUI(QWidget):
                 self.formatted_value = 'S' + str(counter_value)
                 
         self.ok_clicked.emit()
+
+    def closeEvent(self, event):
+        self.closed.emit()
+        super().closeEvent(event)
         
+
+
 
 def tag_source():
     app = QApplication.instance()  # Versuchen Sie, eine vorhandene QApplication-Instanz abzurufen
-    if app is None:  # Wenn keine vorhanden ist, erstellen Sie eine neue
-        app = QApplication(sys.argv)
+    if app is None:     
+       app = QApplication([])
+
+      # Erstellen Sie eine neue QApplication-Instanz
     gui = TagSourceGUI()
-    gui.ok_clicked.connect(app.exit)
+    gui.ok_clicked.connect(app.exit)  # Verwenden Sie app.quit anstelle von app.exit
+    gui.closed.connect(app.exit)
     gui.show()
     app.exec_()
     return gui.formatted_value, gui.selected_value
 
-if __name__ == "__main__":
-    # Hier sollte der Code aufgerufen werden, indem die Funktion tag_source() aufgerufen wird.
-    # Beispiel: formatted_value, selected_value = tag_source()
-    pass
+    
+

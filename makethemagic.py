@@ -19,58 +19,65 @@ def get_application_instance():
         app = QApplication(sys.argv)
     return app
 
-def makethemagic(path, folder_name, AnimeType, Animename, Gruppe, inhalt):
+def makethemagic(path, folder_name, AnimeType, Animename, Gruppe, inhalt, dummy_files=None, dummy_folders=None):
     app = get_application_instance()
     rename_dialog = RenameDialog()
     new_name = None
 
-    for folge in os.listdir(path):
-        folge_pfad = os.path.join(path, folge)
-        if os.path.isfile(folge_pfad):
-            folge_name, folge_ext = os.path.splitext(folge)
-            if folge in Animename:
-                new_name = Animename.get(folge, [''])[0]
-                # Überprüfung, ob einer der beiden Werte leer ist
-                if "" not in AnimeType:
-                    # BONUS,OVA ONA WEB Spezial
-                    neue_folge_name = f"{new_name}.{AnimeType[1]}.{AnimeType[0]}E{Animename[folge][1]}{Gruppe}{folge_ext}"
-                elif AnimeType[1] == "":
-                    # Serie
-                    neue_folge_name = f"{new_name}.{AnimeType[0]}E{Animename[folge][1]}{Gruppe}{folge_ext}"
-                else:
-                    # Film AMV
-                    neue_folge_name = f"{new_name}.{AnimeType[1]} {Animename[folge][1]}{Gruppe}{folge_ext}"
-                neue_folge_pfad = os.path.join(path, neue_folge_name)
-                if os.path.exists(neue_folge_pfad):
-                    rename_dialog.get_new_name(neue_folge_name)
-                    new_name = None  # Warten auf Benutzerantwort
-                else:
-                    try:
-                        os.rename(folge_pfad, neue_folge_pfad)
-                    except OSError as e:
-                        QMessageBox.critical(None, "Fehler beim Umbenennen", f"Fehler beim Umbenennen von {folge}: {e.strerror}")
-   
-    if folder_name != inhalt:
-        # Überprüfen, ob im 'path' ein Ordner existiert, der genau den Namen 'folder_name' hat
-        existing_folder_path = os.path.join(os.path.dirname(path), folder_name)
-        if os.path.exists(existing_folder_path) and os.path.isdir(existing_folder_path):
-            for file_name in os.listdir(path):
-                source_file = os.path.join(path, file_name)
-                destination_file = os.path.join(existing_folder_path, file_name)
-                if os.path.isfile(source_file) and os.path.isfile(destination_file):
-                    try:
-                        shutil.copyfile(source_file, destination_file)  # Daten überschreiben
-                    except OSError as e:
-                        QMessageBox.critical(None, "Fehler beim Kopieren", f"Fehler beim Kopieren von {source_file}: {e.strerror}")
-            try:
-                shutil.rmtree(path)  # Ursprünglichen Ordner löschen
-            except OSError as e:
-                QMessageBox.critical(None, "Fehler beim Löschen", f"Fehler beim Löschen des Ordners {path}: {e.strerror}")
-        else:
-            new_inhalt_folder_path = os.path.join(os.path.dirname(path), folder_name)
-            try:
-                os.rename(path, new_inhalt_folder_path)
-            except OSError as e:
-                QMessageBox.critical(None, "Fehler beim Umbenennen", f"Fehler beim Umbenennen von {path}: {e.strerror}")
+    if dummy_files is None:
+        dummy_files = []
+    if dummy_folders is None:
+        dummy_folders = []
 
-    return folder_name
+    if not dummy_files and not dummy_folders:
+        # Wenn keine Dummy-Daten übergeben wurden, verwende die echten Daten
+        for folge in os.listdir(path):
+            folge_pfad = os.path.join(path, folge)
+            if os.path.isfile(folge_pfad):
+                folge_name, folge_ext = os.path.splitext(folge)
+                if folge in Animename:
+                    new_name = Animename.get(folge, [''])[0]
+                    # Überprüfung, ob einer der beiden Werte leer ist
+                    if "" not in AnimeType:
+                        # BONUS,OVA ONA WEB Spezial
+                        neue_folge_name = f"{new_name}.{AnimeType[1]}.{AnimeType[0]}E{Animename[folge][1]}{Gruppe}{folge_ext}"
+                    elif AnimeType[1] == "":
+                        # Serie
+                        neue_folge_name = f"{new_name}.{AnimeType[0]}E{Animename[folge][1]}{Gruppe}{folge_ext}"
+                    else:
+                        # Film AMV
+                        neue_folge_name = f"{new_name}.{AnimeType[1]} {Animename[folge][1]}{Gruppe}{folge_ext}"
+                    neue_folge_pfad = os.path.join(path, neue_folge_name)
+                    if os.path.exists(neue_folge_pfad):
+                        rename_dialog.get_new_name(neue_folge_name)
+                        new_name = None  # Warten auf Benutzerantwort
+                    else:
+                        try:
+                            os.rename(folge_pfad, neue_folge_pfad)
+                        except OSError as e:
+                            QMessageBox.critical(None, "Fehler beim Umbenennen", f"Fehler beim Umbenennen von {folge}: {e.strerror}")
+
+
+if __name__ == "__main__":
+    path = r"C:\Users\admin\Desktop\Test\Demon.Slayer.Kimetsu"
+    Animename = {'Demon.Slayer.Kimetsu.S01E02.mkv': ['Demon.Slayer.Kimetsu 3', '04'], 'Demon.Slayer.Kimetsu.S01E05.mkv': ['Demon.Slayer.Kimetsu 3', '06']}
+    sourcelist = ['.mp4', '.mov', '.avi', '.wmv', '.flv', '.mkv', '.webm', '.3gp', '.mpg', '.mpeg', '.rm', '.rmvb', '.vob', '.m4v']
+    AnimeType = ('S01', '')
+    Gruppe = ""
+    inhalt = "Dämon"
+    folder_name = 'Demon.Slayer.Kimetsu 3'
+
+    # Erstellen von Dummy-Dateinamen und Dummy-Ordner
+    dummy_file_names = ["file1.mp4", "file2.mkv", "file3.avi"]
+    dummy_folder_names = ["folder1", "folder2", "folder3"]
+
+    # Testen des Kopierens und Löschens von Dateien und Ordnern
+    # Erstellen von Dummy-Dateinamen und -Ordnern, die in der Funktion kopiert und gelöscht werden
+    dummy_files_to_copy = ["file1.mp4", "file2.mkv"]
+    dummy_files_to_delete = ["file3.avi"]
+
+    if not path:
+        print(f"Der angegebene Pfad '{path}' existiert nicht.")
+    else:
+        makethemagic(path, folder_name, AnimeType, Animename, Gruppe, inhalt, dummy_file_names, dummy_folder_names)
+        print("")

@@ -1,29 +1,50 @@
 import os
 import re
-import shutil
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QLineEdit, QMessageBox
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QScrollArea, QGridLayout, QLineEdit, QMessageBox
+from PyQt5 import QtGui
 
 class FolgenlisteGUI(QWidget):
     def __init__(self, files, videofiles):
         super().__init__()
         self.setWindowTitle("Folgenliste")
-        
+        self.setFixedSize(800, 600)
+
         layout = QVBoxLayout()
-        
+
+        scroll_area = QScrollArea(self)
+        scroll_widget = QWidget()
+        scroll_layout = QVBoxLayout()
+
         self.entry_boxes = []
+        count = 0
+        group_layout = None
+        grid_layout = QGridLayout()
         for file in sorted(videofiles, key=lambda x: int(videofiles[x][1])):
             folge_name = file
             folge_nummer = videofiles[file][1]
 
             label = QLabel(folge_name)
-            layout.addWidget(label)
-
             entry_box = QLineEdit()
+            entry_box.setValidator(QtGui.QIntValidator(0, 999))
             entry_box.setText(folge_nummer)
-            layout.addWidget(entry_box)
+            entry_box.setFixedWidth(entry_box.fontMetrics().boundingRect('8' * 3).width() + 10)
+            entry_box.textChanged.connect(lambda text=entry_box: self.adjust_textfield_size(entry_box))  # Fix here
+
+            row = count % 10
+            col = count // 10
+
+            grid_layout.addWidget(label, row * 2, col)
+            grid_layout.addWidget(entry_box, row * 2 + 1, col)
 
             self.entry_boxes.append(entry_box)
+
+            count += 1
+
+        scroll_layout.addLayout(grid_layout)
+        scroll_widget.setLayout(scroll_layout)
+        scroll_area.setWidget(scroll_widget)
+        layout.addWidget(scroll_area)
 
         save_button = QPushButton("OK")
         save_button.clicked.connect(self.save_changes)
@@ -49,17 +70,25 @@ class FolgenlisteGUI(QWidget):
                 return
         self.close()
 
+    def adjust_textfield_size(self, textfield):
+        text = textfield.text()
+        width = textfield.fontMetrics().boundingRect(text).width() + 10
+        textfield.setFixedWidth(width)
+
 
 def findname(path, animename, sourcelist):
     files = os.listdir(path)
     videofiles = {}
     for file in files:
+        full_path = os.path.join(path, file)
+        if os.path.isdir(full_path):
+            continue
         video_sourcetype = source(file, sourcelist)
-        if video_sourcetype:
-            videofiles[file] = [animename]
-            folge_nummer = find_folge_nummer(file)
-            videofiles[file].append(folge_nummer)
-            print(file, "-------", folge_nummer)
+        if video_sourcetype is None:
+            continue
+        videofiles[file] = [animename]
+        folge_nummer = find_folge_nummer(file)
+        videofiles[file].append(folge_nummer)
 
     if video_sourcetype:
         updated_files = create_gui(files, videofiles)
@@ -67,7 +96,9 @@ def findname(path, animename, sourcelist):
 
 
 def create_gui(files, videofiles):
-    app = get_application_instance()
+    app = QApplication.instance()
+    if app is None:
+        app = QApplication(sys.argv)
     gui = FolgenlisteGUI(files, videofiles)
     gui.show()
     app.exec_()
@@ -83,35 +114,33 @@ def source(filename, sourcelist):
 
 
 def find_folge_nummer(filename):
-    # Muster SxxExx
     match = re.search(r"S\d{2}E(\d{2})", filename)
     if match:
         folge_nummer = match.group(1)
         return folge_nummer
-    # Muster SxxExxx
+
     match = re.search(r"S\d{2}E(\d{3})", filename)
     if match:
         folge_nummer = match.group(1)
         return folge_nummer
-    # Ignoriert []{}()
+
     match = re.search(r"\b(\d+)\b(?!\.\w+$)(?![\[\(\{]).*?$", filename[::-1])
     if match:
         folge_nummer = match.group(1)[::-1]
         return folge_nummer
-    # Muster 00x erkennen
+
     match = re.search(r"(\d{2,})\D*$", filename[::-1])
     if match:
         folge_nummer = match.group(1)[::-1]
         return folge_nummer
-    return 0
 
-def get_application_instance():
-    app = QApplication.instance()  # Versuchen Sie, eine vorhandene QApplication-Instanz abzurufen
-    if app is None:  # Wenn keine vorhanden ist, erstellen Sie eine neue
-        app = QApplication(sys.argv)
-    return app
 
 if __name__ == "__main__":
-    # Hier sollte der Code aufgerufen werden, indem der entsprechende Pfad und die SourceListe übergeben werden.
-    # Beispiel: findname("Pfad_zum_Verzeichnis", "Animename", [".mp4", ".mkv"])
-    pass
+    path = r"C:\Users\admin\Desktop\Test\Dokidoki! Precure"
+    animename = "Test"
+    sourcelist = ["mp4", "mkv"]
+    if not path:
+        print(f"Der angegebene Pfad '{path}' existiert nicht.")
+    else:
+        animename = findname(path, animename, sourcelist)
+        print(animename)

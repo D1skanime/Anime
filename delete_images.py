@@ -168,7 +168,5 @@ def delete_images(folder_path):
 
 if __name__ == "__main__":
     path = r"C:\Users\admin\Desktop\Test\Demon.Slayer.Kimetsu"
-    if not os.path.exists(path):
-        print(f"Der angegebene Pfad '{path}' existiert nicht.")
-    else:
-        delete_images(path)
+    delete_images(path)
+        

@@ -61,7 +61,5 @@ if __name__ == "__main__":
     folder_name = "Demon.Slayer.Kimetsu 1"
     orgin_item = "Demon.Slayer.Kimetsu"
     existing_folder_path = 'C:\\Users\\admin\\Desktop\\Demon.Slayer.Kimetsu'
-    if not path:
-        print(f"Der angegebene Pfad '{path}' existiert nicht.")
-    else:
-        rename_folder(path, folder_name, orgin_item)        
+    rename_folder(path, folder_name, orgin_item) 
+               

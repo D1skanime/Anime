@@ -140,8 +140,5 @@ if __name__ == "__main__":
     path = r"C:\Users\admin\Desktop\Test\Dokidoki! Precure"
     animename = "Test"
     sourcelist = ["mp4", "mkv"]
-    if not path:
-        print(f"Der angegebene Pfad '{path}' existiert nicht.")
-    else:
-        animename = findname(path, animename, sourcelist)
-        print(animename)
+    animename = findname(path, animename, sourcelist)
+    print(animename)

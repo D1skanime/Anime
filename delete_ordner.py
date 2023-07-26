@@ -89,15 +89,15 @@ class DeleteFoldersGUI(QWidget):
     def close_button_clicked(self):
         self.close()
 
+def delete_ordner(folder_path):    
+    if has_subfolders(folder_path):
+        gui = DeleteFoldersGUI(folder_path)
+        gui.show()
+        app.exec_()
+    else:
+        print("Es gibt keine Subfolger zum Löschen.")
 
 if __name__ == "__main__":
-    folder_path = "Pfad zum Ordner, dessen Inhalte gelöscht werden sollen"
-else:
-    def delete_ordner(folder_path):    
+    folder_path = r"C:\Users\admin\Desktop\test\Double J"
+    delete_ordner(folder_path)
 
-        if has_subfolders(folder_path):
-            gui = DeleteFoldersGUI(folder_path)
-            gui.show()
-            app.exec_()
-        else:
-            print("Es gibt keine Subfolger zum Löschen.")

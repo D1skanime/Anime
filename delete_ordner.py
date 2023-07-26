@@ -2,10 +2,12 @@ import os
 import shutil
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QListWidget, QMessageBox
 from app import app
+from style import apply_dark_theme
 
 def has_subfolders(folder_path):
     subfolders = [f for f in os.scandir(folder_path) if f.is_dir()]
     return len(subfolders) > 0
+    apply_dark_theme(app)
 
 class DeleteFoldersGUI(QWidget):
     def __init__(self, folder_path):
@@ -13,6 +15,7 @@ class DeleteFoldersGUI(QWidget):
         self.folder_path = folder_path
         self.setWindowTitle("Ordner löschen?")
         self.setGeometry(100, 100, 400, 400)
+        apply_dark_theme(app)
 
         layout = QVBoxLayout()
 
@@ -27,14 +30,17 @@ class DeleteFoldersGUI(QWidget):
 
         view_button = QPushButton("Ordner ansehen")
         view_button.clicked.connect(self.view_folder)
+        view_button.setStyleSheet("background-color: #2a82da; color: white;")
         layout.addWidget(view_button)
 
         delete_button = QPushButton("Löschen")
         delete_button.clicked.connect(self.delete_folders)
+        delete_button.setStyleSheet("background-color: #da2a2a; color: white;")
         layout.addWidget(delete_button)
 
         close_button = QPushButton("Schließen")
         close_button.clicked.connect(self.close_button_clicked)
+        close_button.setStyleSheet("background-color: #595959; color: white;")
         layout.addWidget(close_button)
 
         self.setLayout(layout)

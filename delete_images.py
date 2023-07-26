@@ -1,15 +1,18 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QCheckBox, QListWidget, QListWidgetItem, QMessageBox, QHBoxLayout
-from PyQt5.QtGui import QFont, QPixmap, QImageReader, QIcon, QImage
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QCheckBox, QListWidget, QListWidgetItem, QMessageBox, QHBoxLayout, QScrollArea
+from PyQt5.QtGui import QFont, QPixmap, QImageReader, QIcon, QImage, QPalette, QColor
 from PyQt5 import QtCore
 import os
 import fnmatch
+from style import apply_dark_theme
 
 
 def delete_images(folder_path):
     app = QApplication.instance()
     if app is None:
         app = QApplication([])
+
+    apply_dark_theme(app)
 
     print("\nAktueller Ordner:", folder_path)
     image_extensions = ["nfo", "txt", "jpg", "png", "gif", "bif"]
@@ -38,9 +41,10 @@ def delete_images(folder_path):
             self.init_ui()
 
         def init_ui(self):
-            layout = QHBoxLayout()
+            layout = QVBoxLayout()
 
             label = QLabel(os.path.basename(self.file_path))
+            label.setAlignment(QtCore.Qt.AlignCenter)
             layout.addWidget(label)
 
             thumbnail = self.generate_thumbnail()
@@ -69,14 +73,11 @@ def delete_images(folder_path):
         def __init__(self):
             super().__init__()
             self.setWindowTitle("Bilder löschen")
-            self.setGeometry(100, 100, 600, 500)
+            self.setGeometry(100, 100, 800, 600)
 
-            layout = QVBoxLayout()
+            main_layout = QVBoxLayout(self)
 
-            label = QLabel("Gefundene Dateien:")
-            layout.addWidget(label)
-
-            layout.setSpacing(10)
+            layout = QHBoxLayout()
 
             checkbox_frame = QWidget()
             checkbox_layout = QVBoxLayout(checkbox_frame)
@@ -92,15 +93,29 @@ def delete_images(folder_path):
             for extension in image_extensions:
                 if any(file.endswith("." + extension) for file in image_files):
                     checkbox = QCheckBox(extension)
+                    checkbox.setStyleSheet("color: white")
                     checkbox.stateChanged.connect(lambda state, ext=extension: toggle_extension(ext))
                     checkbox_layout.addWidget(checkbox)
                     checkboxes.append(checkbox)
 
             layout.addWidget(checkbox_frame)
 
+            main_layout.addLayout(layout)
+
+            label = QLabel("Gefundene Dateien:")
+            label.setAlignment(QtCore.Qt.AlignCenter)
+            main_layout.addWidget(label)
+
+            scroll_area = QScrollArea()
+            scroll_widget = QWidget()
+            scroll_area.setWidget(scroll_widget)
+            scroll_area.setWidgetResizable(True)
+            scroll_layout = QVBoxLayout(scroll_widget)
+
             list_widget = QListWidget()
             list_widget.setSelectionMode(QListWidget.MultiSelection)
-            layout.addWidget(list_widget)
+            scroll_layout.addWidget(list_widget)
+
             for file in image_files:
                 item = QListWidgetItem(list_widget)
                 widget = ImagePreviewItem(file)
@@ -109,10 +124,15 @@ def delete_images(folder_path):
                 item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)  # Disable item selection
                 item.setSizeHint(QtCore.QSize(220, 220))  # Set fixed size for each item
                 item.file_path = file  # Set the file_path attribute
+
+            scroll_area.setMinimumHeight(220)
+            layout.addWidget(scroll_area)
+
             delete_button = QPushButton("Ausgewählte löschen")
+            delete_button.setStyleSheet("background-color: #3572A5; color: white; padding: 10px")
             delete_button.clicked.connect(self.delete_selected)
-            layout.addWidget(delete_button)
-            self.setLayout(layout)
+            main_layout.addWidget(delete_button)
+
             self.selected_files = []
             self.selected_extensions = selected_extensions
             self.list_widget = list_widget
@@ -136,7 +156,8 @@ def delete_images(folder_path):
                     error_message = f"Fehler beim Löschen der Datei {file}: {e.strerror}"
                     QMessageBox.critical(None, "Fehler beim Löschen", error_message)
                     print(error_message)
-            self.close()
+
+            self.list_widget.clearSelection()
 
     gui = DeleteImagesGUI()
     gui.ok_clicked_deleteimages.connect(gui.close)

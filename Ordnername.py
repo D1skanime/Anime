@@ -14,6 +14,7 @@ class FolderNameGUI(QWidget):
         label = QLabel("Ordnername eingeben:")
         layout.addWidget(label)
         self.entry = QLineEdit(inhalt)
+        self.entry.setStyleSheet("background-color: #f0f0f0; color: black;")  # Hintergrundfarbe und Textfarbe ändern
         layout.addWidget(self.entry)
 
         ok_button = QPushButton("OK")

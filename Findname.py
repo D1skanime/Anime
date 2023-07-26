@@ -3,12 +3,15 @@ import re
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QScrollArea, QGridLayout, QLineEdit, QMessageBox
 from PyQt5 import QtGui
+from app import app
+from style import apply_dark_theme
 
 class FolgenlisteGUI(QWidget):
     def __init__(self, files, videofiles):
         super().__init__()
         self.setWindowTitle("Folgenliste")
         self.setFixedSize(800, 600)
+        apply_dark_theme(app)
 
         layout = QVBoxLayout()
 
@@ -25,10 +28,12 @@ class FolgenlisteGUI(QWidget):
             folge_nummer = videofiles[file][1]
 
             label = QLabel(folge_name)
+            label.setStyleSheet("color: white; font-weight: bold;")  # Weiße Schrift auf dunklem Hintergrund
             entry_box = QLineEdit()
             entry_box.setValidator(QtGui.QIntValidator(0, 999))
             entry_box.setText(folge_nummer)
             entry_box.setFixedWidth(entry_box.fontMetrics().boundingRect('8' * 3).width() + 10)
+            entry_box.setStyleSheet("background-color: #f0f0f0; color: black; font-size: 12px;")  # Helles Grau für Hintergrund und schwarzer Text
             entry_box.textChanged.connect(lambda text=entry_box: self.adjust_textfield_size(entry_box))  # Fix here
 
             row = count % 10
@@ -47,6 +52,7 @@ class FolgenlisteGUI(QWidget):
         layout.addWidget(scroll_area)
 
         save_button = QPushButton("OK")
+        save_button.setStyleSheet("background-color: blue; color: white; font-weight: bold;")  # Blaue Schaltfläche mit weißem Text
         save_button.clicked.connect(self.save_changes)
         layout.addWidget(save_button)
 
@@ -75,7 +81,6 @@ class FolgenlisteGUI(QWidget):
         width = textfield.fontMetrics().boundingRect(text).width() + 10
         textfield.setFixedWidth(width)
 
-
 def findname(path, animename, sourcelist):
     files = os.listdir(path)
     videofiles = {}
@@ -94,7 +99,6 @@ def findname(path, animename, sourcelist):
         updated_files = create_gui(files, videofiles)
         return updated_files
 
-
 def create_gui(files, videofiles):
     app = QApplication.instance()
     if app is None:
@@ -105,13 +109,11 @@ def create_gui(files, videofiles):
     
     return gui.videofiles
 
-
 def source(filename, sourcelist):
     for source in sourcelist:
         if filename.lower().endswith(source):
             return source
     return None
-
 
 def find_folge_nummer(filename):
     match = re.search(r"S\d{2}E(\d{2})", filename)
@@ -133,7 +135,6 @@ def find_folge_nummer(filename):
     if match:
         folge_nummer = match.group(1)[::-1]
         return folge_nummer
-
 
 if __name__ == "__main__":
     path = r"C:\Users\admin\Desktop\Test\Dokidoki! Precure"

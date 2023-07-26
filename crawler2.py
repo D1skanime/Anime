@@ -12,6 +12,12 @@ from Ordnername import Ordnername
 from makethemagic import makethemagic
 from tag_source import tag_source
 from rename_folder import rename_folder
+from app import app
+
+
+from style import apply_dark_theme
+
+apply_dark_theme(app)
 
 def select_path(title):
     root = tk.Tk()

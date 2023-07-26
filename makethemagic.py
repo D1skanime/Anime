@@ -46,7 +46,7 @@ def makethemagic(path, folder_name, AnimeType, Animename, Gruppe, inhalt, dummy_
                         neue_folge_name = f"{new_name}.{AnimeType[0]}E{Animename[folge][1]}{Gruppe}{folge_ext}"
                     else:
                         # Film AMV
-                        neue_folge_name = f"{new_name}.{AnimeType[1]} {Animename[folge][1]}{Gruppe}{folge_ext}"
+                        neue_folge_name = f"{new_name} {Animename[folge][1]}{Gruppe}{folge_ext}"
                     neue_folge_pfad = os.path.join(path, neue_folge_name)
                     if os.path.exists(neue_folge_pfad):
                         rename_dialog.get_new_name(neue_folge_name)

@@ -132,6 +132,9 @@ def finde_groupname(path, SourceList, path_text):
             if match:
                 Gruppename = match.group(0)
                 pattern = r"\b" + re.escape(Gruppename) + r"\b"
+                SonderzeichenListe = ["/", "?", "*", "<", ">", "'", "|", ":","[","]"]
+                for SonderZeichen in SonderzeichenListe:
+                    Gruppename = Gruppename.replace(SonderZeichen, "!" if SonderZeichen == "?" else "")
                 if not re.search(pattern, ' '.join(text_data)):
                     SaveGruppeName(Gruppename, path_text)
                     return "-" + Gruppename

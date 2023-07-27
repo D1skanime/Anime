@@ -5,8 +5,12 @@ from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLay
 from PyQt5 import QtGui
 from app import app
 from style import apply_dark_theme
+from PyQt5.QtCore import pyqtSignal
 
 class FolgenlisteGUI(QWidget):
+    close_signal = pyqtSignal()
+    ok_clicked = pyqtSignal()
+
     def __init__(self, files, videofiles):
         super().__init__()
         self.setWindowTitle("Folgenliste")
@@ -60,6 +64,11 @@ class FolgenlisteGUI(QWidget):
         self.files = files
         self.videofiles = videofiles
 
+        self.close_signal.connect(self.close)
+
+    def closeEvent(self, event):
+        event.accept()
+
     def save_changes(self):
         for i, file in enumerate(sorted(self.videofiles, key=lambda x: int(self.videofiles[x][1]))):
             new_folge_nummer = self.entry_boxes[i].text()
@@ -74,10 +83,10 @@ class FolgenlisteGUI(QWidget):
             except ValueError:
                 QMessageBox.critical(self, "Ungültige Eingabe", "Die Folgennummer muss eine ganze Zahl sein.")
                 return
-        self.close()
+        self.ok_clicked.emit()
 
     def closeEvent(self, event):
-        # Diese Methode wird aufgerufen, wenn der Benutzer das GUI-Fenster schließt
+        # System beenden, wenn der Benutzer auf das Kreuzsymbol klickt
         sys.exit()    
 
     def adjust_textfield_size(self, textfield):
@@ -99,7 +108,7 @@ def findname(path, animename, sourcelist):
         folge_nummer = find_folge_nummer(file)
         videofiles[file].append(folge_nummer)
 
-    
+
     updated_files = create_gui(files, videofiles)
     return updated_files
 
@@ -108,9 +117,11 @@ def create_gui(files, videofiles):
     if app is None:
         app = QApplication(sys.argv)
     gui = FolgenlisteGUI(files, videofiles)
+    gui.ok_clicked.connect(app.quit)
+    gui.close_signal.connect(app.quit)
     gui.show()
     app.exec_()
-    
+
     return gui.videofiles
 
 def source(filename, sourcelist):
@@ -141,8 +152,8 @@ def find_folge_nummer(filename):
         return folge_nummer
 
 if __name__ == "__main__":
-    path = r"C:\Users\admin\Desktop\test\nogruppe"
+    path = r"C:\Users\admin\Desktop\Test\Dokidoki! Precure"
     animename = "Test"
-    sourcelist = ["mp4", "mkv","avi"]
+    sourcelist = ["mp4", "mkv"]
     animename = findname(path, animename, sourcelist)
     print(animename)

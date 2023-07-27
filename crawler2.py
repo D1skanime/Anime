@@ -44,13 +44,13 @@ def open_log_file(file_path):
 
 def main():
     # Beispielaufruf
-    #path = select_path("Pfad auswählen")
-    #PathvonLogDatei = select_file_path("Log-Datei auswählen")
-    #path_text = select_file_path("Gruppen-Textdatei auswählen")
+    path = select_path("Pfad auswählen")
+    PathvonLogDatei = select_file_path("Log-Datei auswählen")
+    path_text = select_file_path("Gruppen-Textdatei auswählen")
     # Für Test
-    path = r"C:\Users\admin\Desktop\Test"
-    PathvonLogDatei = r"C:\Users\admin\Desktop\Animelog.txt"
-    path_text = r"C:\Users\admin\Desktop\Gruppen.txt"
+    #path = r"C:\Users\admin\Desktop\Test"
+    #PathvonLogDatei = r"C:\Users\admin\Desktop\Animelog.txt"
+    #path_text = r"C:\Users\admin\Desktop\Gruppen.txt"
 
     if not os.path.exists(path):
         print(f"Der angegebene Pfad '{path}' existiert nicht.")

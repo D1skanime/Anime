@@ -76,6 +76,10 @@ class FolgenlisteGUI(QWidget):
                 return
         self.close()
 
+    def closeEvent(self, event):
+        # Diese Methode wird aufgerufen, wenn der Benutzer das GUI-Fenster schließt
+        sys.exit()    
+
     def adjust_textfield_size(self, textfield):
         text = textfield.text()
         width = textfield.fontMetrics().boundingRect(text).width() + 10
@@ -95,9 +99,9 @@ def findname(path, animename, sourcelist):
         folge_nummer = find_folge_nummer(file)
         videofiles[file].append(folge_nummer)
 
-    if video_sourcetype:
-        updated_files = create_gui(files, videofiles)
-        return updated_files
+    
+    updated_files = create_gui(files, videofiles)
+    return updated_files
 
 def create_gui(files, videofiles):
     app = QApplication.instance()
@@ -137,8 +141,8 @@ def find_folge_nummer(filename):
         return folge_nummer
 
 if __name__ == "__main__":
-    path = r"C:\Users\admin\Desktop\Test\Dokidoki! Precure"
+    path = r"C:\Users\admin\Desktop\test\nogruppe"
     animename = "Test"
-    sourcelist = ["mp4", "mkv"]
+    sourcelist = ["mp4", "mkv","avi"]
     animename = findname(path, animename, sourcelist)
     print(animename)

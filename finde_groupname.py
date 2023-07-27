@@ -90,7 +90,7 @@ class GruppnameGUI(QWidget):
     def closeEvent(self, event):
         selected_text = [self.text_data[i] for i, value in enumerate(self.checkbox_values) if value.isChecked()]
         new_groupname = self.new_group_input.text().strip()
-
+        #Todo Wenn Selected oder Gruppename eingetragen und auf kreuzbutton geklickt expeption einbauen
         if not selected_text and not new_groupname:
             msg_box = QMessageBox(self)
             msg_box.setWindowTitle("Fehlende Auswahl")

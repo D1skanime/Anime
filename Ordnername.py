@@ -57,11 +57,7 @@ def Ordnername(inhalt):
     for SonderZeichen in SonderzeichenListe:
         newOrdnerAnimename = newOrdnerAnimename.replace(SonderZeichen, "!" if SonderZeichen == "?" else "")
 
-    return newOrdnerAnimename
-
-#if __name__ == "__main__":
-    #inhalt = "FFFFF"
-    
+    return newOrdnerAnimename    
 
 if __name__ == "__main__":
     inhalt = "FFFFF"

@@ -84,7 +84,7 @@ def get_application_instance():
     return app
 
 def makethemagic(path, folder_name, AnimeType, Animename, Gruppe, inhalt):
-    app = get_application_instance(app)
+    app = get_application_instance()
     rename_dialog = RenameDialog()
     for folge in os.listdir(path):
         folge_pfad = os.path.join(path, folge)

@@ -25,6 +25,7 @@ def select_path(title):
     root.withdraw()
     path = filedialog.askdirectory(title=title)
     root.destroy()
+    print(path)
     return path
 
 def select_file_path(title):
@@ -45,13 +46,13 @@ def open_log_file(file_path):
 
 def main():
     # Beispielaufruf
-    #path = select_path("Pfad auswählen")
-    PathvonLogDatei = select_file_path("Log-Datei auswählen")
-    path_text = select_file_path("Gruppen-Textdatei auswählen")
+    path = select_path("Pfad auswählen")
+    #PathvonLogDatei = select_file_path("Log-Datei auswählen")
+    #path_text = select_file_path("Gruppen-Textdatei auswählen")
     # Für Test
-    path = r"A:\Anime\Serie\Anime.TV.Sub.unfertig"
-    #PathvonLogDatei = r"C:\Users\admin\Desktop\Animelog.txt"
-    #path_text = r"C:\Users\admin\Desktop\Gruppen.txt"
+    #path = r"A:/Anime/Serie/Anime.TV.Sub.unfertig"
+    PathvonLogDatei = r"C:\Users\admin\Desktop\Animelog.txt"
+    path_text = r"C:\Users\admin\Desktop\Gruppen.txt"
 
     if not os.path.exists(path):
         print(f"Der angegebene Pfad '{path}' existiert nicht.")
@@ -63,6 +64,7 @@ def main():
     ]
 
     try:
+        print(path)
         log_entries = open_log_file(PathvonLogDatei)
         contents = [item for item in os.listdir(path) if item not in log_entries]
         contents.sort() 

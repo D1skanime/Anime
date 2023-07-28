@@ -11,6 +11,9 @@ if app is None:
     app = QApplication([])
 apply_dark_theme(app)
 
+import getpass
+print(getpass.getuser())
+
 class GruppnameGUI(QWidget):
     ok_clicked = pyqtSignal()
     closed = pyqtSignal()
@@ -80,7 +83,7 @@ class GruppnameGUI(QWidget):
             new_groupname = self.new_group_input.text()
             if new_groupname:
                 self.result = new_groupname
-                SaveGruppeName(self.result, path_text)
+                SaveGruppeName(self.result, self.path_text)
                 # Neuer Gruppenname wird in die Textdatei geschrieben
             else:
                 self.result = None

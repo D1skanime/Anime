@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog
+from PyQt5.QtWidgets import QApplication, QFileDialog
 
 #Skripte
 from delete_images import delete_images
@@ -44,11 +45,11 @@ def open_log_file(file_path):
 
 def main():
     # Beispielaufruf
-    path = select_path("Pfad auswählen")
+    #path = select_path("Pfad auswählen")
     PathvonLogDatei = select_file_path("Log-Datei auswählen")
     path_text = select_file_path("Gruppen-Textdatei auswählen")
     # Für Test
-    #path = r"C:\Users\admin\Desktop\Test"
+    path = r"A:\Anime\Serie\Anime.TV.Sub.unfertig"
     #PathvonLogDatei = r"C:\Users\admin\Desktop\Animelog.txt"
     #path_text = r"C:\Users\admin\Desktop\Gruppen.txt"
 

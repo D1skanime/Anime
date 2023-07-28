@@ -7,7 +7,6 @@ from style import apply_dark_theme
 def has_subfolders(folder_path):
     subfolders = [f for f in os.scandir(folder_path) if f.is_dir()]
     return len(subfolders) > 0
-    apply_dark_theme(app)
 
 class DeleteFoldersGUI(QWidget):
     def __init__(self, folder_path):

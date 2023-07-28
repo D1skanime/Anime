@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLay
 from PyQt5.QtGui import QFont, QPixmap, QImageReader, QIcon, QImage, QPalette, QColor
 from PyQt5 import QtCore
 import os
-import fnmatch
 from style import apply_dark_theme
 
 
@@ -138,35 +137,55 @@ def delete_images(folder_path):
             cancel_button.clicked.connect(self.on_cancel_clicked)
             layout.addWidget(cancel_button)
 
-            self.selected_files = []
             self.selected_extensions = selected_extensions
             self.list_widget = list_widget
 
         def on_cancel_clicked(self):
             self.close()
-           
 
         def delete_selected(self):
             selected_items = self.list_widget.selectedItems()
-            self.selected_files = [item.file_path for item in selected_items]
+            selected_files = [item.file_path for item in selected_items]
 
-            if self.selected_files or self.selected_extensions:
+            if self.selected_extensions or selected_files:
                 try:
-                    if self.selected_extensions:
-                        for file in image_files:
-                            file_extension = os.path.splitext(file)[1][1:].lower()
-                            if file_extension in self.selected_extensions:
-                                os.remove(file)
-                    elif self.selected_files:
-                        for file in self.selected_files:
+                    for file in image_files:
+                        file_extension = os.path.splitext(file)[1][1:].lower()
+                        if file_extension in self.selected_extensions:
                             os.remove(file)
+
+                    for file in selected_files:
+                        os.remove(file)
 
                 except OSError as e:
                     error_message = f"Fehler beim Löschen der Datei {file}: {e.strerror}"
                     QMessageBox.critical(None, "Fehler beim Löschen", error_message)
                     print(error_message)
 
-            self.list_widget.clearSelection()
+                self.list_widget.clearSelection()
+                self.update_gui()
+
+        def update_gui(self):
+            folder_path = os.path.dirname(image_files[0]) if image_files else ""
+            image_files.clear()
+            for filename in os.listdir(folder_path):
+                file_path = os.path.join(folder_path, filename)
+                if os.path.isfile(file_path):
+                    for extension in image_extensions:
+                        if filename.lower().endswith("." + extension):
+                            image_files.append(file_path)
+
+            self.list_widget.clear()
+            for file in image_files:
+                item = QListWidgetItem(self.list_widget)
+                widget = ImagePreviewItem(file)
+                self.list_widget.setItemWidget(item, widget)
+                item.setSizeHint(widget.sizeHint())
+                item.setFlags(
+                    QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
+                )  # Disable item selection
+                item.setSizeHint(QtCore.QSize(220, 220))  # Set fixed size for each item
+                item.file_path = file  # Set the file_path attribute
 
     gui = DeleteImagesGUI()
     gui.ok_clicked_deleteimages.connect(gui.close)
@@ -176,6 +195,5 @@ def delete_images(folder_path):
 
 
 if __name__ == "__main__":
-    path = r"C:\Users\admin\Desktop\Test\Demon.Slayer.Kimetsu"
+    path = r"C:\Users\admin\Desktop\test\nogruppe"
     delete_images(path)
-        

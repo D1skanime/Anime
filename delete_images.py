@@ -133,9 +133,18 @@ def delete_images(folder_path):
             delete_button.clicked.connect(self.delete_selected)
             main_layout.addWidget(delete_button)
 
+            cancel_button = QPushButton("Abbrechen")
+            cancel_button.setStyleSheet("background-color: red; color: white; font-weight: bold;")  # Rote Schaltfläche mit weißem Text
+            cancel_button.clicked.connect(self.on_cancel_clicked)
+            layout.addWidget(cancel_button)
+
             self.selected_files = []
             self.selected_extensions = selected_extensions
             self.list_widget = list_widget
+
+        def on_cancel_clicked(self):
+            self.close()
+           
 
         def delete_selected(self):
             selected_items = self.list_widget.selectedItems()

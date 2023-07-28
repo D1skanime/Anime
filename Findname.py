@@ -5,12 +5,8 @@ from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLay
 from PyQt5 import QtGui
 from app import app
 from style import apply_dark_theme
-from PyQt5.QtCore import pyqtSignal
 
 class FolgenlisteGUI(QWidget):
-    close_signal = pyqtSignal()
-    ok_clicked = pyqtSignal()
-
     def __init__(self, files, videofiles):
         super().__init__()
         self.setWindowTitle("Folgenliste")
@@ -55,19 +51,19 @@ class FolgenlisteGUI(QWidget):
         scroll_area.setWidget(scroll_widget)
         layout.addWidget(scroll_area)
 
-        save_button = QPushButton("OK")
+        save_button = QPushButton("Speichern")
         save_button.setStyleSheet("background-color: blue; color: white; font-weight: bold;")  # Blaue Schaltfläche mit weißem Text
         save_button.clicked.connect(self.save_changes)
         layout.addWidget(save_button)
 
+        cancel_button = QPushButton("Abbrechen und Programm beenden")
+        cancel_button.setStyleSheet("background-color: red; color: white; font-weight: bold;")  # Rote Schaltfläche mit weißem Text
+        cancel_button.clicked.connect(self.on_cancel_clicked)
+        layout.addWidget(cancel_button)
+
         self.setLayout(layout)
         self.files = files
         self.videofiles = videofiles
-
-        self.close_signal.connect(self.close)
-
-    def closeEvent(self, event):
-        event.accept()
 
     def save_changes(self):
         for i, file in enumerate(sorted(self.videofiles, key=lambda x: int(self.videofiles[x][1]))):
@@ -83,16 +79,16 @@ class FolgenlisteGUI(QWidget):
             except ValueError:
                 QMessageBox.critical(self, "Ungültige Eingabe", "Die Folgennummer muss eine ganze Zahl sein.")
                 return
-        self.ok_clicked.emit()
-
-    def closeEvent(self, event):
-        # System beenden, wenn der Benutzer auf das Kreuzsymbol klickt
-        sys.exit()    
-
+        self.close()
+			  
     def adjust_textfield_size(self, textfield):
         text = textfield.text()
         width = textfield.fontMetrics().boundingRect(text).width() + 10
         textfield.setFixedWidth(width)
+
+    def on_cancel_clicked(self):
+        self.close()
+        sys.exit()    
 
 def findname(path, animename, sourcelist):
     files = os.listdir(path)
@@ -108,7 +104,7 @@ def findname(path, animename, sourcelist):
         folge_nummer = find_folge_nummer(file)
         videofiles[file].append(folge_nummer)
 
-
+    
     updated_files = create_gui(files, videofiles)
     return updated_files
 
@@ -117,11 +113,9 @@ def create_gui(files, videofiles):
     if app is None:
         app = QApplication(sys.argv)
     gui = FolgenlisteGUI(files, videofiles)
-    gui.ok_clicked.connect(app.quit)
-    gui.close_signal.connect(app.quit)
     gui.show()
     app.exec_()
-
+    
     return gui.videofiles
 
 def source(filename, sourcelist):

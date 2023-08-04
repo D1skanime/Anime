@@ -83,7 +83,7 @@ def get_application_instance():
         app = QApplication(sys.argv)
     return app
 
-def makethemagic(path, folder_name, AnimeType, Animename, Gruppe, inhalt):
+def makethemagic(path, folder_name, AnimeType, Animename, inhalt):
     app = get_application_instance()
     rename_dialog = RenameDialog()
     for folge in os.listdir(path):
@@ -95,13 +95,13 @@ def makethemagic(path, folder_name, AnimeType, Animename, Gruppe, inhalt):
                 # Überprüfung, ob einer der beiden Werte leer ist
                 if "" not in AnimeType:
                     # BONUS,OVA ONA WEB Spezial
-                    neue_folge_name = f"{new_name}.{AnimeType[1]}.{AnimeType[0]}E{Animename[folge][1]}{Gruppe}{folge_ext}"
+                    neue_folge_name = f"{new_name}.{AnimeType[1]}.{AnimeType[0]}E{Animename[folge][1]}{Animename[folge][2]}{folge_ext}"
                 elif AnimeType[1] == "":
                     # Serie
-                    neue_folge_name = f"{new_name}.{AnimeType[0]}E{Animename[folge][1]}{Gruppe}{folge_ext}"
+                    neue_folge_name = f"{new_name}.{AnimeType[0]}E{Animename[folge][1]}{Animename[folge][2]}{folge_ext}"
                 else:
                     # Film AMV
-                    neue_folge_name = f"{new_name} {Animename[folge][1]}{Gruppe}{folge_ext}"
+                    neue_folge_name = f"{new_name} {Animename[folge][1]}{Animename[folge][2]}{folge_ext}"
                 neue_folge_pfad = os.path.join(path, neue_folge_name)
                 if os.path.exists(neue_folge_pfad):
                     neue_folge_pfad = os.path.join(path, rename_dialog.get_new_name(neue_folge_name))
@@ -121,7 +121,7 @@ def simulate_rename_dialog(Test_folgen):
 
 if __name__ == "__main__":
     path = r"C:\Users\admin\Desktop\Test\Demon.Slayer.Kimetsu"
-    Animename = {'Demon.Slayer.Kimetsu.S01E01': ['namedjhfiojdkljkldjckljmckldjkljfkdjklcmkldmckldmckldmckldmckldmckldmckldmkldmkdmckld', '04'], 'Demon.Slayer.Kimetsu.S01E05.mkv': ['Demon.Slayer.Kimetsu 3', '06']}
+    Animename = {'11 Eyes.S01E01-B-SH.mkv': ['Test', '01', '-B-SH'], '11 Eyes.S01E01-Strawhat.mkv': ['Test', '01', '-Strawhat'], '11 Eyes.S01E02-Strawhat.mkv': ['Test', '02', '-Strawhat'], '11 Eyes.S01E02.mkv': ['Test', '02', '-ABJ'], '11 Eyes.S01E03-B-SH.mkv': ['Test', '03', '-B-SH'], '11 Eyes.S01E03-Strawhat.mkv': ['Test', '03', '-Strawhat'], '11 Eyes.S01E04-B-SH.mkv': ['Test', '04', '-B-SH'], '11 Eyes.S01E04-Strawhat.mkv': ['Test', '04', '-Strawhat'], '11 Eyes.S01E05-B-SH.mkv': ['Test', '05', '-B-SH'], '11 Eyes.S01E05-Strawhat.mkv': ['Test', '05', '-Strawhat'], '11 Eyes.S01E06-B-SH.mkv': ['Test', '06', '-B-SH'], '11 Eyes.S01E06-Strawhat.mkv': ['Test', '06', '-Strawhat'], '11 Eyes.S01E07-B-SH.mkv': ['Test', '07', '-B-SH'], '11 Eyes.S01E07-Strawhat.mkv': ['Test', '07', '-Strawhat']}
     sourcelist = ['.mp4', '.mov', '.avi', '.mkv']
     AnimeType = ('S01', '')
     Gruppe = "test"

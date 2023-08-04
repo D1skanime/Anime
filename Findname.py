@@ -146,7 +146,7 @@ def find_folge_nummer(filename):
         return folge_nummer
 
 if __name__ == "__main__":
-    path = r"C:\Users\admin\Desktop\Test\Dokidoki! Precure"
+    path = r"C:\Users\admin\Desktop\test\11eyes"
     animename = "Test"
     sourcelist = ["mp4", "mkv"]
     animename = findname(path, animename, sourcelist)

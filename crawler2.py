@@ -77,9 +77,9 @@ def main():
             animename = findname(item_path, folder_name, source_list)
             print("Processing:", item_path)
             print("Animation Name:", animename)
-            gruppe = finde_groupname(item_path, source_list, path_text)
+            animename = finde_groupname(item_path, source_list, path_text)
             print("Group Name:", gruppe)
-            makethemagic(item_path, folder_name, animetype, animename, gruppe, item)
+            makethemagic(item_path, folder_name, animetype, animename, item)
             if item != folder_name:
                 rename_folder(path, folder_name, item)
             else:

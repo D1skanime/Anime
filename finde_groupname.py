@@ -18,12 +18,13 @@ class GruppnameGUI(QWidget):
     ok_clicked = pyqtSignal()
     closed = pyqtSignal()
 
-    def __init__(self, text_data, path_text, new_keys_to_add):
+    def __init__(self, text_data, path_text, new_keys_to_add, animename):
         super().__init__()
         self.setWindowTitle("Gruppennamen auswählen")
         self.setGeometry(100, 100, 400, 300)
         self.text_data = sorted(text_data)
         self.path_text = path_text  # Neue Instanzattribut, um den Pfad zur Textdatei zu speichern
+        self.animename = animename
 
         layout = QVBoxLayout()
 
@@ -68,7 +69,7 @@ class GruppnameGUI(QWidget):
 
         ok_button = QPushButton("OK")
         ok_button.setStyleSheet("background-color: blue; color: white; font-weight: bold;")  # Blaue Schaltfläche mit weißem Text
-        ok_button.clicked.connect(self.on_ok_button_click)
+        ok_button.clicked.connect(lambda: self.on_ok_button_click(animename))
         layout.addWidget(ok_button)
 
         self.setLayout(layout)
@@ -80,7 +81,7 @@ class GruppnameGUI(QWidget):
                 if other_checkbox != checkbox:
                     other_checkbox.setChecked(False)   
 
-    def on_ok_button_click(self):
+    def on_ok_button_click(self, animename):
         selected_text = [self.text_data[i] for i, value in enumerate(self.checkbox_values) if value.isChecked()]
         new_groupname = self.new_group_input.text().strip()
 
@@ -148,7 +149,7 @@ def SaveGruppeName(Neuer_Gruppename_eintrag, path_text):
             Animetexteintragneu.write("\n" + Neuer_Gruppename_eintrag)
 
 # Finde den Gruppennamen für die Folge im Verzeichnis
-def finde_groupname(path, SourceList, path_text, animename):
+def finde_groupname(path_text, animename):
     text_data = []
     with open(path_text, 'r', encoding="cp1252") as file:
         text_data = [_.rstrip('\n') for _ in file]
@@ -170,7 +171,7 @@ def finde_groupname(path, SourceList, path_text, animename):
             new_keys_to_add.append(file)
 
     if new_keys_to_add:
-        gui = GruppnameGUI(text_data, path_text,new_keys_to_add)
+        gui = GruppnameGUI(text_data, path_text,new_keys_to_add,animename)
         gui.ok_clicked.connect(gui.close)
         gui.closed.connect(gui.close)
         gui.show()

@@ -1,32 +1,35 @@
-**Anleitung zur Umbenennung von Anime-Folgen in einem Ordner mit dem Anime-Episoden-Organisierer**
+**Anime-Episoden-Organisierer** 
 
-Der Anime-Episoden-Organisierer bietet Ihnen eine einfache und effiziente Methode, um Anime-Folgen in einem Ordner umzubenennen. Folgen Sie diesen Schritten, um Ihre Episodensammlung mithilfe der Anwendung optimal zu organisieren:
+Der Anime-Episoden-Organisierer ist ein leistungsstolles Werkzeug zur effizienten Umbenennung und Organisation von Anime-Folge insbesonders Anime Fansubs. Dieses Python-Programm bietet eine grafische Benutzeroberfläche (GUI), die es Benutzern ermöglicht, ihre Episodensammlung schnell und einfach neu zu benennen und zu strukturieren.
 
-1. **Installation von Python und PyQt5:**
-   Stellen Sie sicher, dass Sie Python auf Ihrem System installiert haben. Wenn nicht, laden Sie es von der offiziellen Python-Website herunter und führen Sie die Installation durch. Zusätzlich benötigen Sie die PyQt5-Bibliothek. Installieren Sie sie, indem Sie den Befehl `pip install PyQt5` in der Kommandozeile ausführen.
+**Funktionsweise:**
 
-2. **Download und Start:**
-   Laden Sie den Anime-Episoden-Organisierer von GitHub herunter und extrahieren Sie die Dateien auf Ihrem Computer. Öffnen Sie die Kommandozeile oder ein Terminal und navigieren Sie zum Ordner, in dem Sie die Dateien extrahiert haben. Starten Sie die Anwendung, indem Sie den Befehl `python main.py` ausführen.
+Der Code befasst sich mit der Erstellung einer grafischen Benutzeroberfläche (GUI), in der der Benutzer die Umbenennungsoptionen auswählen und die Umbenennung der Episoden vornehmen kann. Die GUI wird mithilfe der PyQt5-Bibliothek erstellt.
 
-3. **Ordner auswählen:**
-   Nachdem die Anwendung gestartet wurde, wählen Sie den Ordner aus, in dem sich Ihre Anime-Folgen befinden, die Sie umbenennen möchten. Klicken Sie auf "Auswählen", um den Ordner zu bestätigen.
+Weiter verschiedene Funktionen definiert, um die Umbenennung und Organisation der Anime-Folgen durchzuführen. Dies umfasst das Finden von Dateien, das Extrahieren von Informationen aus Dateinamen, das Umbenennen von Dateien und das Erstellen von Gruppennamen.
 
-4. **Folgenliste anzeigen:**
-   Die Anwendung zeigt Ihnen eine Liste der erkannten Anime-Folgen im ausgewählten Ordner an. Jede Episode wird mit ihrem aktuellen Namen und anderen relevanten Informationen angezeigt.
+Der Benutzer wählt zunächst das Verzeichnis aus, das die Anime-Folgen enthält. Die Anwendung analysiert dann die Dateinamen, extrahiert relevante Informationen wie den Episodennamen und die Folgennummer und zeigt sie in einer Liste an. Der Benutzer kann dann verschiedene Umbenennungsoptionen auswählen, wie z.B. die Anpassung von Folgennummern, das Hinzufügen von Gruppennamen und das Zuweisen von Tags oder Quellen.
 
-5. **Umbenennungsoptionen auswählen:**
-   Wählen Sie die Umbenennungsoptionen aus, die Sie auf die ausgewählten Episoden anwenden möchten. Sie können Folgendes tun:
-   - **Folgennummern anpassen:** Ändern Sie die Nummerierung der Episoden nach Ihren Wünschen.
-   - **Gruppennamen hinzufügen:** Fügen Sie Gruppennamen hinzu, um Episoden zu kennzeichnen oder zu kategorisieren.
-   - **Tags/Quellen zuweisen:** Weisen Sie Tags oder Quellen zu den Episoden hinzu, um verschiedene Versionen zu kennzeichnen.
+Die GUI bietet eine Vorschau der vorgeschlagenen Änderungen, bevor der Benutzer die Umbenennung durchführt. Nach Bestätigung werden die ausgewählten Folgen umbenannt und die neue Ordnerstruktur wird erstellt.
 
-6. **Vorschau der Änderungen:**
-   Die Anwendung zeigt Ihnen eine Vorschau der neuen Namen für die ausgewählten Episoden an. Überprüfen Sie die Änderungen und stellen Sie sicher, dass alles Ihren Erwartungen entspricht.
+**Vorbedingungen:**
 
-7. **Umbenennen der Episoden:**
-   Klicken Sie auf die Schaltfläche "Umbenennen", um die ausgewählten Episoden mit den ausgewählten Umbenennungsoptionen umzubenennen. Die Anwendung führt die Umbenennung durch und zeigt Ihnen eine Bestätigungsmeldung an.
+Um den Anime-Episoden-Organisierer auszuführen, müssen folgende Vorbedingungen erfüllt sein:
 
-8. **Ordnerstruktur überprüfen:**
-   Navigieren Sie zu Ihrem ausgewählten Ordner und überprüfen Sie die umbenannten Episoden. Sie sollten die neuen Namen und die angewendeten Umbenennungsoptionen sehen.
+1. **Python und PyQt5:** Stellen Sie sicher, dass Python auf Ihrem System installiert ist. Installieren Sie auch die PyQt5-Bibliothek, die für die GUI verwendet wird. Sie können PyQt5 mit dem Befehl `pip install PyQt5` installieren.
 
-Mit dem Anime-Episoden-Organisierer wird das Umbenennen von Anime-Folgen in einem Ordner zum Kinderspiel. Sie können die Namen nach Ihren Wünschen anpassen, Gruppennamen und Tags hinzufügen sowie die Ordnerstruktur Ihrer Sammlung ordentlich organisieren. Die visuelle Benutzeroberfläche und die benutzerfreundliche Anleitung machen es einfach, Ihre Anime-Episoden zu verwalten und zu organisieren.
+2. **Befüllte oder leere Textdatei für die Gruppennamen:**
+3. **Befüllte oder leere Textdatei für den Log damit das System erkennt welche Order schon bearbeitet wurden:** 
+
+**Ausführung:**
+
+1. Klonen oder laden Sie dieses Repository herunter.
+2. Stellen Sie sicher, dass Python und PyQt5 auf Ihrem System installiert sind.
+3. Führen Sie die Datei "main.py" aus, indem Sie `python main.py` in der Kommandozeile oder im Terminal eingeben.
+4. Wählen Sie das Hauptverzeichnis mit den Anime-Ordner aus.
+5. Wählen Sie die gewünschten Umbenennungsoptionen aus.
+6. Überprüfen Sie die Vorschau der Änderungen.
+7. Klicken Sie auf "Umbenennen", um die ausgewählten Episoden umzubenennen.
+
+Der Anime-Episoden-Organisierer bietet eine praktische und zeitsparende Lösung zur Umbenennung und Organisation von Anime-Folgen. Nutzen Sie die leistungsfähigen Umbenennungsoptionen und die benutzerfreundliche GUI, um Ihre Episodensammlung effizient zu organisieren.
+Der Episoden Organisier richtet sich an alle die User die den Namen von Anisearch behalten wollen jedoch das Staffel und Episoden tagging von tvdb verwenden müssen damit die Fansubs von Emby und Jellyfin erkannt werden.

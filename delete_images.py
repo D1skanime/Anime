@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QCheckBox, QListWidget, QListWidgetItem, QMessageBox, QHBoxLayout, QScrollArea
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QCheckBox, QListWidget, QListWidgetItem, QMessageBox, QHBoxLayout, QScrollArea, QDesktopWidget
 from PyQt5.QtGui import QFont, QPixmap, QImageReader, QIcon, QImage, QPalette, QColor
 from PyQt5 import QtCore
 import os
@@ -10,6 +10,16 @@ def delete_images(folder_path):
     app = QApplication.instance()
     if app is None:
         app = QApplication([])
+
+        # Bildschirmgröße ermitteln
+    screen = QDesktopWidget().screenGeometry()
+    screen_width = screen.width()
+    screen_height = screen.height()
+
+
+    # GUI-Größe um 10 Prozent kleiner setzen
+    gui_width = int(screen_width * 0.5)
+    gui_height = int(screen_height * 0.9)    
 
     apply_dark_theme(app)
 
@@ -72,7 +82,7 @@ def delete_images(folder_path):
         def __init__(self):
             super().__init__()
             self.setWindowTitle("Bilder löschen")
-            self.setGeometry(100, 100, 800, 600)
+            self.setGeometry(100, 100, gui_width, gui_height)
 
             main_layout = QVBoxLayout(self)
 
@@ -195,5 +205,5 @@ def delete_images(folder_path):
 
 
 if __name__ == "__main__":
-    path = r"C:\Users\admin\Desktop\test\nogruppe"
+    path = r"C:\Users\admin\Desktop\test\Akagami no Shirayukihime"
     delete_images(path)

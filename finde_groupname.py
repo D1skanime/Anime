@@ -1,7 +1,7 @@
 import os
 import re
 import sys
-from PyQt5.QtWidgets import QMessageBox, QApplication, QWidget, QVBoxLayout, QCheckBox, QPushButton, QLineEdit, QScrollArea, QLabel
+from PyQt5.QtWidgets import QMessageBox, QApplication, QWidget, QVBoxLayout, QCheckBox, QPushButton, QLineEdit, QScrollArea, QLabel, QDesktopWidget
 from PyQt5.QtCore import pyqtSignal
 from app import app
 from style import apply_dark_theme
@@ -9,6 +9,17 @@ from style import apply_dark_theme
 app = QApplication.instance()
 if app is None:
     app = QApplication([])
+
+    # Bildschirmgröße ermitteln
+screen = QDesktopWidget().screenGeometry()
+screen_width = screen.width()
+screen_height = screen.height()
+
+
+    # GUI-Größe um 10 Prozent kleiner setzen
+gui_width = int(screen_width * 0.5)
+gui_height = int(screen_height * 0.9) 
+
 apply_dark_theme(app)
 
 import getpass
@@ -21,7 +32,7 @@ class GruppnameGUI(QWidget):
     def __init__(self, text_data, path_text, new_keys_to_add, animename):
         super().__init__()
         self.setWindowTitle("Gruppennamen auswählen")
-        self.setGeometry(100, 100, 400, 300)
+        self.setGeometry(100, 100, gui_width, gui_height)
         self.text_data = sorted(text_data)
         self.path_text = path_text  # Neue Instanzattribut, um den Pfad zur Textdatei zu speichern
         self.animename = animename

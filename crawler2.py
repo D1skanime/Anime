@@ -13,6 +13,7 @@ from Ordnername import Ordnername
 from makethemagic import makethemagic
 from tag_source import tag_source
 from rename_folder import rename_folder
+from all_ordner import all_ordner
 from app import app
 
 
@@ -23,10 +24,11 @@ apply_dark_theme(app)
 def select_path(title):
     root = tk.Tk()
     root.withdraw()
+    result = all_ordner()
     path = filedialog.askdirectory(title=title)
     root.destroy()
-    print(path)
-    return path
+    return path, result
+
 
 def select_file_path(title):
     root = tk.Tk()
@@ -46,13 +48,13 @@ def open_log_file(file_path):
 
 def main():
     # Beispielaufruf
-    path = select_path("Pfad auswählen")
-    #PathvonLogDatei = select_file_path("Log-Datei auswählen")
-    #path_text = select_file_path("Gruppen-Textdatei auswählen")
+    path, result = select_path("Pfad auswählen")
+    PathvonLogDatei = select_file_path("Log-Datei auswählen")
+    path_text = select_file_path("Gruppen-Textdatei auswählen")
     # Für Test
     #path = r"A:/Anime/Serie/Anime.TV.Sub.unfertig"
-    PathvonLogDatei = r"C:\Users\admin\Desktop\Animelog.txt"
-    path_text = r"C:\Users\admin\Desktop\Gruppen.txt"
+    #PathvonLogDatei = r"C:\Users\admin\Desktop\Animelog.txt"
+    #path_text = r"C:\Users\admin\Desktop\Gruppen.txt"
 
     if not os.path.exists(path):
         print(f"Der angegebene Pfad '{path}' existiert nicht.")
@@ -66,25 +68,45 @@ def main():
     try:
         print(path)
         log_entries = open_log_file(PathvonLogDatei)
-        contents = [item for item in os.listdir(path) if item not in log_entries]
-        contents.sort() 
-        for item in contents:
-            item_path = os.path.join(path, item)
-            delete_ordner(item_path)
-            delete_images(item_path)
+        if result == "one":
+            item = os.path.basename(path)
+            delete_ordner(path)
+            delete_images(path)
             folder_name = Ordnername(item)
             animetype = tag_source()
-            animename = findname(item_path, folder_name, source_list)
-            print("Processing:", item_path)
+            animename = findname(path, folder_name, source_list)
+            print("Processing:", path)
             print("Animation Name:", animename)
             animename = finde_groupname(path_text, animename)
             print("Animation Name mit Gruppe:", animename)
-            makethemagic(item_path, folder_name, animetype, animename, item)
+            makethemagic(path, folder_name, animetype, animename, item)
             if item != folder_name:
-                rename_folder(path, folder_name, item)
+                    newPath = os.path.dirname(path)
+                    rename_folder(newPath, folder_name, item)
             else:
-                 folder_name = item   
+                    folder_name = item   
             save_log_file(folder_name, PathvonLogDatei)
+
+        else:
+            contents = [item for item in os.listdir(path) if item not in log_entries]
+            contents.sort() 
+            for item in contents:
+                item_path = os.path.join(path, item)
+                delete_ordner(item_path)
+                delete_images(item_path)
+                folder_name = Ordnername(item)
+                animetype = tag_source()
+                animename = findname(item_path, folder_name, source_list)
+                print("Processing:", item_path)
+                print("Animation Name:", animename)
+                animename = finde_groupname(path_text, animename)
+                print("Animation Name mit Gruppe:", animename)
+                makethemagic(item_path, folder_name, animetype, animename, item)
+                if item != folder_name:
+                        rename_folder(path, folder_name, item)
+                else:
+                        folder_name = item   
+                save_log_file(folder_name, PathvonLogDatei)
 
     except Exception as e:
         print("Ein Fehler ist aufgetreten:")

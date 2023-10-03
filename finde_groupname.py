@@ -1,7 +1,7 @@
 import os
 import re
 import sys
-from PyQt5.QtWidgets import QMessageBox, QApplication, QWidget, QVBoxLayout, QCheckBox, QPushButton, QLineEdit, QScrollArea, QLabel, QDesktopWidget
+from PyQt5.QtWidgets import QMessageBox, QApplication, QWidget, QVBoxLayout, QCheckBox,QFrame, QPushButton, QLineEdit, QScrollArea, QLabel, QDesktopWidget
 from PyQt5.QtCore import pyqtSignal
 from app import app
 from style import apply_dark_theme
@@ -46,20 +46,42 @@ class GruppnameGUI(QWidget):
         self.new_keys_to_add = new_keys_to_add
         self.label_values = []
 
+        new_keys_scroll_area = QScrollArea(self)
+        new_keys_scroll_area.setWidgetResizable(True)
+        new_keys_scroll_widget = QWidget()
+        new_keys_scroll_layout = QVBoxLayout()
+
         if new_keys_to_add:
             keys_label = QLabel("New Keys to Add:")
             keys_label.setStyleSheet("color: white; font-weight: bold;")
-            layout.addWidget(keys_label)
+            new_keys_scroll_layout.addWidget(keys_label)
 
             for key in new_keys_to_add:
                 key_label = QLabel(key)
-									  
                 key_label.setStyleSheet("color: white;")
-																													
                 self.label_values.append(key_label)
-                layout.addWidget(key_label)
+                new_keys_scroll_layout.addWidget(key_label)
 
+        new_keys_scroll_area = QScrollArea(self)
+        new_keys_scroll_area.setWidgetResizable(True)
+        new_keys_scroll_widget = QWidget()
+        new_keys_scroll_layout = QVBoxLayout()
 
+        # Hier fügen Sie die key_labels zu new_keys_scroll_layout hinzu
+        for key_label in self.label_values:
+            new_keys_scroll_layout.addWidget(key_label)
+
+        new_keys_scroll_widget.setLayout(new_keys_scroll_layout)
+        new_keys_scroll_area.setWidget(new_keys_scroll_widget)
+        new_keys_scroll_area.setMaximumHeight(400)
+
+        # Hier fügen Sie new_keys_scroll_area zum Hauptlayout hinzu
+        layout.addWidget(new_keys_scroll_area)
+
+        separator = QFrame()
+        separator.setFrameShape(QFrame.HLine)
+        separator.setFrameShadow(QFrame.Sunken)
+        layout.addWidget(separator)
 
         self.checkbox_values = []
         for text in self.text_data:
@@ -196,6 +218,6 @@ if __name__ == "__main__":
     path_text = r"C:\Users\admin\Desktop\Gruppen.txt"
     SourceList = ["mp4", "mkv", "avi"]
     animename = {'11 Eyes.S01E01-B-SH.mkv': ['Test', '01'], '11 Eyes.S01E01-Strawhat.mkv': ['Test', '01'], '11 Eyes.S01E02-Strawhat.mkv': ['Test', '02'], '11 Eyes.S01E02.mkv': ['Test', '02'], '11 Eyes.S01E03-B-SH.mkv': ['Test', '03'], '11 Eyes.S01E03-Strawhat.mkv': ['Test', '03'], '11 Eyes.S01E04-B-SH.mkv': ['Test', '04'], '11 Eyes.S01E04-Strawhat.mkv': ['Test', '04'], '11 Eyes.S01E05-B-SH.mkv': ['Test', '05'], '11 Eyes.S01E05-Strawhat.mkv': ['Test', '05'], '11 Eyes.S01E06-B-SH.mkv': ['Test', '06'], '11 Eyes.S01E06-Strawhat.mkv': ['Test', '06'], '11 Eyes.S01E07-B-SH.mkv': ['Test', '07'], '11 Eyes.S01E07-Strawhat.mkv': ['Test', '07']}
-    animename = finde_groupname(path, SourceList, path_text, animename)
+    animename = finde_groupname(path_text, animename)
     print(animename)
 

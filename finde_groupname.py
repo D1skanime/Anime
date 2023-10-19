@@ -181,6 +181,29 @@ def SaveGruppeName(Neuer_Gruppename_eintrag, path_text):
         with open(path_text, "a", encoding="cp1252") as Animetexteintragneu:
             Animetexteintragneu.write("\n" + Neuer_Gruppename_eintrag)
 
+def extract_group_name_from_filename(filename):
+    # Zuerst den Gruppennamen aus der Klammer extrahieren, falls vorhanden
+    match = re.search(r'\[(.*?)\]', filename)
+    if match:
+        group_name = match.group(1)
+    else:
+        # Keine Klammer gefunden, setze group_name auf None
+        group_name = None
+
+    # Wenn der Gruppennamen nicht gefunden wurde, versuche, ihn aus dem Dateinamen zu extrahieren
+    if group_name is None:
+        # Hier suchen wir nach einer Zeichenkette zwischen einem Bindestrich und einem Punkt
+        match = re.search(r'-(.*?)(?:\..+|$)', filename)
+        if match:
+            group_name = match.group(1)
+    
+    if group_name:
+        # Überprüfen, ob der Gruppenname nicht mehr als 15 Zeichen hat und nicht mehr als 2 Punkte enthält
+        if len(group_name) <= 15 and group_name.count('.') <= 2:
+            return group_name
+
+    return None            
+
 # Finde den Gruppennamen für die Folge im Verzeichnis
 def finde_groupname(path_text, animename):
     text_data = []
@@ -188,9 +211,11 @@ def finde_groupname(path_text, animename):
         text_data = [_.rstrip('\n') for _ in file]
     new_keys_to_add = []
     for file in animename.keys():
-        match = re.search(r"^\[(.*?)\]|(?<=-)[A-Za-z0-9_-]+(?=\.)", file)
-        if match:
-            Gruppename = match.group(0)
+        #match = re.search(r"^\[(.*?)\]|(?<=-)[A-Za-z0-9_-]+(?=\.)", file)
+        #if match:
+            #Gruppename = match.group(0)
+        Gruppename = extract_group_name_from_filename(file)
+        if Gruppename:    
             pattern = r"\b" + re.escape(Gruppename) + r"\b"
             SonderzeichenListe = ["/", "?", "*", "<", ">", "'", "|", ":", "[", "]"]
             for SonderZeichen in SonderzeichenListe:

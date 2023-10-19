@@ -105,7 +105,7 @@ def makethemagic(path, folder_name, AnimeType, Animename, inhalt):
                 neue_folge_pfad = os.path.join(path, neue_folge_name)
                 if os.path.exists(neue_folge_pfad):
                     neue_folge_pfad = os.path.join(path, rename_dialog.get_new_name(neue_folge_name))
-                    os.rename(folge_pfad, neue_folge_pfad)
+                    os.replace(folge_pfad, neue_folge_pfad)
                 else:
                     try:
                         os.rename(folge_pfad, neue_folge_pfad)

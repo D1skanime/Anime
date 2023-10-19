@@ -193,9 +193,9 @@ def extract_group_name_from_filename(filename):
     # Wenn der Gruppennamen nicht gefunden wurde, versuche, ihn aus dem Dateinamen zu extrahieren
     if group_name is None:
         # Hier suchen wir nach einer Zeichenkette zwischen einem Bindestrich und einem Punkt
-        match = re.search(r'-(.*?)(?:\..+|$)', filename)
+        match = re.search(r'-(.*)(?:\..+|$)', filename)
         if match:
-            group_name = match.group(1)
+            group_name = match.group(1).rsplit('.', 1)[0]
     
     if group_name:
         # Überprüfen, ob der Gruppenname nicht mehr als 15 Zeichen hat und nicht mehr als 2 Punkte enthält
@@ -242,7 +242,7 @@ if __name__ == "__main__":
     path = r"C:\Users\admin\Desktop\test\11eyes"
     path_text = r"C:\Users\admin\Desktop\Gruppen.txt"
     SourceList = ["mp4", "mkv", "avi"]
-    animename = {'11 Eyes.S01E01-B-SH.mkv': ['Test', '01'], '11 Eyes.S01E01-Strawhat.mkv': ['Test', '01'], '11 Eyes.S01E02-Strawhat.mkv': ['Test', '02'], '11 Eyes.S01E02.mkv': ['Test', '02'], '11 Eyes.S01E03-B-SH.mkv': ['Test', '03'], '11 Eyes.S01E03-Strawhat.mkv': ['Test', '03'], '11 Eyes.S01E04-B-SH.mkv': ['Test', '04'], '11 Eyes.S01E04-Strawhat.mkv': ['Test', '04'], '11 Eyes.S01E05-B-SH.mkv': ['Test', '05'], '11 Eyes.S01E05-Strawhat.mkv': ['Test', '05'], '11 Eyes.S01E06-B-SH.mkv': ['Test', '06'], '11 Eyes.S01E06-Strawhat.mkv': ['Test', '06'], '11 Eyes.S01E07-B-SH.mkv': ['Test', '07'], '11 Eyes.S01E07-Strawhat.mkv': ['Test', '07']}
+    animename = {'stars-a.place.further.than.the.universe.e01.1080p.mkv': ['Test', '01'], '11 Eyes.S01E01-Strawhat.mkv': ['Test', '01'], '11 Eyes.S01E02-Strawhat.mkv': ['Test', '02'], '11 Eyes.S01E02.mkv': ['Test', '02'], '11 Eyes.S01E03-B-SH.mkv': ['Test', '03'], '11 Eyes.S01E03-Strawhat.mkv': ['Test', '03'], '11 Eyes.S01E04-B-SH.mkv': ['Test', '04'], '11 Eyes.S01E04-Strawhat.mkv': ['Test', '04'], '11 Eyes.S01E05-B-SH.mkv': ['Test', '05'], '11 Eyes.S01E05-Strawhat.mkv': ['Test', '05'], '11 Eyes.S01E06-B-SH.mkv': ['Test', '06'], '11 Eyes.S01E06-Strawhat.mkv': ['Test', '06'], '11 Eyes.S01E07-B-SH.mkv': ['Test', '07'], '11 Eyes.S01E07-Strawhat.mkv': ['Test', '07']}
     animename = finde_groupname(path_text, animename)
     print(animename)
 

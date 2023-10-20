@@ -201,6 +201,11 @@ def extract_group_name_from_filename(filename):
         # Überprüfen, ob der Gruppenname nicht mehr als 15 Zeichen hat und nicht mehr als 2 Punkte enthält
         if len(group_name) <= 15 and group_name.count('.') <= 2:
             return group_name
+    if group_name:
+        # Überprüfen ob in Groupename Staffelnummerund Epsiodenummer Logik vorkommt wenn ja kein Groupename    
+        match = re.match(r'S\d{2}E\d{2}', group_name)
+        if match:
+            return group_name   
 
     return None            
 

@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1130</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QScrollArea" name="scrollArea">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>210</y>
+      <width>1111</width>
+      <height>341</height>
+     </rect>
+    </property>
+    <property name="widgetResizable">
+     <bool>true</bool>
+    </property>
+    <widget class="QWidget" name="scrollAreaWidgetContents">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>1109</width>
+       <height>339</height>
+      </rect>
+     </property>
+     <widget class="QDateEdit" name="dateEdit_jahr">
+      <property name="geometry">
+       <rect>
+        <x>370</x>
+        <y>10</y>
+        <width>77</width>
+        <height>20</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBox_type">
+      <property name="geometry">
+       <rect>
+        <x>285</x>
+        <y>10</y>
+        <width>69</width>
+        <height>20</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_ordner_name">
+      <property name="geometry">
+       <rect>
+        <x>7</x>
+        <y>10</y>
+        <width>133</width>
+        <height>20</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_videofile_name">
+      <property name="geometry">
+       <rect>
+        <x>146</x>
+        <y>10</y>
+        <width>133</width>
+        <height>20</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBox_gruppe">
+      <property name="geometry">
+       <rect>
+        <x>570</x>
+        <y>10</y>
+        <width>121</width>
+        <height>20</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="spinBox_staffel">
+      <property name="geometry">
+       <rect>
+        <x>460</x>
+        <y>10</y>
+        <width>33</width>
+        <height>20</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="spinBox_folge">
+      <property name="geometry">
+       <rect>
+        <x>520</x>
+        <y>10</y>
+        <width>33</width>
+        <height>20</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_videotype">
+      <property name="geometry">
+       <rect>
+        <x>712</x>
+        <y>10</y>
+        <width>81</width>
+        <height>20</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>7</x>
+      <y>1</y>
+      <width>269</width>
+      <height>179</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_add_ordner_name">
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+       <property name="buddy">
+        <cstring>lineEdit_add_ordner_name</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="lineEdit_add_ordner_name"/>
+     </item>
+     <item row="0" column="2">
+      <widget class="QPushButton" name="pushButton_add_ordner_name">
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_add_videofile_name">
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+       <property name="buddy">
+        <cstring>lineEdit_add_videofile_name</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="lineEdit_add_videofile_name"/>
+     </item>
+     <item row="1" column="2">
+      <widget class="QPushButton" name="pushButton_add_videofile_name">
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_add_type">
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+       <property name="buddy">
+        <cstring>comboBox_add_type</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QComboBox" name="comboBox_add_type"/>
+     </item>
+     <item row="2" column="2">
+      <widget class="QPushButton" name="pushButton_add_type">
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_add_jahr">
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+       <property name="buddy">
+        <cstring>dateEdit_add_jahr</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QDateEdit" name="dateEdit_add_jahr"/>
+     </item>
+     <item row="3" column="2">
+      <widget class="QPushButton" name="pushButton_add_jahr">
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_add_staffel">
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+       <property name="buddy">
+        <cstring>spinBox_add_staffel</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QSpinBox" name="spinBox_add_staffel"/>
+     </item>
+     <item row="4" column="2">
+      <widget class="QPushButton" name="pushButton_add_staffel">
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_add_gruppe">
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+       <property name="buddy">
+        <cstring>comboBox_add_gruppe</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QComboBox" name="comboBox_add_gruppe"/>
+     </item>
+     <item row="5" column="2">
+      <widget class="QPushButton" name="pushButton_add_gruppe">
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0" colspan="3">
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QLabel" name="label_jahr">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>190</y>
+      <width>47</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+    <property name="buddy">
+     <cstring>dateEdit_jahr</cstring>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_type">
+    <property name="geometry">
+     <rect>
+      <x>293</x>
+      <y>190</y>
+      <width>47</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+    <property name="buddy">
+     <cstring>comboBox_type</cstring>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_videotype">
+    <property name="geometry">
+     <rect>
+      <x>720</x>
+      <y>190</y>
+      <width>47</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+    <property name="buddy">
+     <cstring>lineEdit_videotype</cstring>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_videofile_name">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>190</y>
+      <width>47</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+    <property name="buddy">
+     <cstring>lineEdit_videofile_name</cstring>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_ordner_name">
+    <property name="geometry">
+     <rect>
+      <x>19</x>
+      <y>190</y>
+      <width>47</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+    <property name="buddy">
+     <cstring>lineEdit_ordner_name</cstring>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_folge">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>190</y>
+      <width>47</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+    <property name="buddy">
+     <cstring>spinBox_folge</cstring>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_staffel">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>190</y>
+      <width>47</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+    <property name="buddy">
+     <cstring>spinBox_staffel</cstring>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label__gruppe">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>190</y>
+      <width>47</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+    <property name="buddy">
+     <cstring>comboBox_gruppe</cstring>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1130</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <tabstops>
+  <tabstop>lineEdit_ordner_name</tabstop>
+  <tabstop>lineEdit_videofile_name</tabstop>
+  <tabstop>comboBox_type</tabstop>
+  <tabstop>dateEdit_jahr</tabstop>
+  <tabstop>spinBox_staffel</tabstop>
+  <tabstop>spinBox_folge</tabstop>
+  <tabstop>comboBox_gruppe</tabstop>
+  <tabstop>lineEdit_videotype</tabstop>
+  <tabstop>lineEdit_add_ordner_name</tabstop>
+  <tabstop>pushButton_add_ordner_name</tabstop>
+  <tabstop>lineEdit_add_videofile_name</tabstop>
+  <tabstop>pushButton_add_videofile_name</tabstop>
+  <tabstop>comboBox_add_type</tabstop>
+  <tabstop>pushButton_add_type</tabstop>
+  <tabstop>dateEdit_add_jahr</tabstop>
+  <tabstop>pushButton_add_jahr</tabstop>
+  <tabstop>spinBox_add_staffel</tabstop>
+  <tabstop>pushButton_add_staffel</tabstop>
+  <tabstop>comboBox_add_gruppe</tabstop>
+  <tabstop>pushButton_add_gruppe</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

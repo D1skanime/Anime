@@ -7,13 +7,18 @@ from PyQt5.QtWidgets import QApplication, QFileDialog
 #Skripte
 from delete_images import delete_images
 from delete_ordner import delete_ordner
-from finde_groupname import finde_groupname
-from findname import findname
-from Ordnername import Ordnername
+from find_gruppe import find_gruppe_in_videofile
 from makethemagic import makethemagic
-from tag_source import tag_source
+from tag_videofile import tag_videofile
 from rename_folder import rename_folder
 from all_ordner import all_ordner
+from videofiles import isvideofile
+from find_nummer import find_folge_nummer
+from remove_junke import remove_junke
+from update_videofiles import create_gui
+from buildnew_name import buildnew_name
+from save_gruppe import save_gruppe
+from fix_nummer import fix_nummer
 from app import app
 
 
@@ -46,6 +51,23 @@ def open_log_file(file_path):
         entries = [line.rstrip('\n') for line in file]
     return entries
 
+def alle_funktionen(path_text, path, PathvonLogDatei, ordnername_orgin, source_list, typ_liste):
+    delete_ordner(path)
+    delete_images(path)
+    daten = os.listdir(path)
+    videofiles = isvideofile(daten, ordnername_orgin, source_list)
+    videofiles = remove_junke(videofiles)
+    videofiles = tag_videofile(videofiles)
+    videofiles = find_gruppe_in_videofile(videofiles)
+    videofiles = find_folge_nummer(videofiles)
+    videofiles = create_gui(videofiles, path_text, typ_liste)
+    videofiles = fix_nummer(videofiles)
+    videofiles = buildnew_name(videofiles)
+    makethemagic(path, videofiles)
+    rename_folder(path, videofiles[next(iter(videofiles))][0], ordnername_orgin)  
+    save_log_file(videofiles[next(iter(videofiles))][0], PathvonLogDatei)
+    save_gruppe(path_text, videofiles)
+
 def main():
     # Beispielaufruf
     path, result = select_path("Pfad auswählen")
@@ -65,49 +87,23 @@ def main():
         ".m4v", ".ts", ".m2ts", ".f4v", ".divx", ".ogv", ".ogm", ".asf", ".mxf", ".flv", ".mpg", ".webm"
     ]
 
+    typ_liste = [
+        'OVA','Bonus','Film','AMV','TS','ONA'
+    ]
+
     try:
         print(path)
         log_entries = open_log_file(PathvonLogDatei)
         if result == "one":
-            item = os.path.basename(path)
-            delete_ordner(path)
-            delete_images(path)
-            folder_name = Ordnername(item)
-            animetype = tag_source()
-            animename = findname(path, folder_name, source_list)
-            print("Processing:", path)
-            print("Animation Name:", animename)
-            animename = finde_groupname(path_text, animename)
-            print("Animation Name mit Gruppe:", animename)
-            makethemagic(path, folder_name, animetype, animename, item)
-            if item != folder_name:
-                    newPath = os.path.dirname(path)
-                    rename_folder(newPath, folder_name, item)
-            else:
-                    folder_name = item   
-            save_log_file(folder_name, PathvonLogDatei)
-
+            ordnername_orgin = os.path.basename(path)
+            alle_funktionen(path_text, path, PathvonLogDatei, ordnername_orgin, source_list, typ_liste)
         else:
             contents = [item for item in os.listdir(path) if item not in log_entries]
-            contents.sort() 
+            contents.sort()
             for item in contents:
-                item_path = os.path.join(path, item)
-                delete_ordner(item_path)
-                delete_images(item_path)
-                folder_name = Ordnername(item)
-                animetype = tag_source()
-                animename = findname(item_path, folder_name, source_list)
-                print("Processing:", item_path)
-                print("Animation Name:", animename)
-                animename = finde_groupname(path_text, animename)
-                print("Animation Name mit Gruppe:", animename)
-                makethemagic(item_path, folder_name, animetype, animename, item)
-                if item != folder_name:
-                        rename_folder(path, folder_name, item)
-                else:
-                        folder_name = item   
-                save_log_file(folder_name, PathvonLogDatei)
-
+                path_ordnername_orgin = os.path.join(path, item)
+                ordnername_orgin = os.path.basename(path_ordnername_orgin)
+                alle_funktionen(path_text, path_ordnername_orgin, PathvonLogDatei, ordnername_orgin, source_list, typ_liste)     
     except Exception as e:
         print("Ein Fehler ist aufgetreten:")
         print(str(e))

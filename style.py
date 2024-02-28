@@ -20,3 +20,18 @@ def apply_dark_theme(app):
 
     font = QFont("Arial", 10)
     app.setFont(font)
+
+    app.setStyleSheet("""
+        QPushButton {
+            background-color: #353535;
+            color: white;
+            border: none;
+            padding: 5px;
+        }
+        QPushButton:hover {
+            background-color: #454545;
+        }
+        QPushButton:pressed {
+            background-color: #252525;
+        }
+    """)

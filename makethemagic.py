@@ -77,56 +77,34 @@ class RenameDialog(QDialog):
         return QSize(max(text_width + 150, 400), 150)
 
 
-def get_application_instance():
+def makethemagic(path, videofiles):
     app = QApplication.instance()
     if app is None:
         app = QApplication(sys.argv)
-    return app
-
-def makethemagic(path, folder_name, AnimeType, Animename, inhalt):
-    app = get_application_instance()
     rename_dialog = RenameDialog()
-    for folge in os.listdir(path):
-        folge_pfad = os.path.join(path, folge)
-        if os.path.isfile(folge_pfad):
-            folge_name, folge_ext = os.path.splitext(folge)
-            if folge in Animename:
-                new_name = Animename.get(folge, [''])[0]
-                # Überprüfung, ob einer der beiden Werte leer ist
-                if "" not in AnimeType:
-                    # BONUS,OVA ONA WEB Spezial
-                    neue_folge_name = f"{new_name}.{AnimeType[1]}.{AnimeType[0]}E{Animename[folge][1]}{Animename[folge][2]}{folge_ext}"
-                elif AnimeType[1] == "":
-                    # Serie
-                    neue_folge_name = f"{new_name}.{AnimeType[0]}E{Animename[folge][1]}{Animename[folge][2]}{folge_ext}"
-                else:
-                    # Film AMV
-                    neue_folge_name = f"{new_name} {Animename[folge][1]}{Animename[folge][2]}{folge_ext}"
-                neue_folge_pfad = os.path.join(path, neue_folge_name)
-                if os.path.exists(neue_folge_pfad):
-                    neue_folge_pfad = os.path.join(path, rename_dialog.get_new_name(neue_folge_name))
-                    os.replace(folge_pfad, neue_folge_pfad)
-                else:
-                    try:
-                        os.rename(folge_pfad, neue_folge_pfad)
-                    except OSError as e:
-                        QMessageBox.critical(None, "Fehler beim Umbenennen", f"Fehler beim Umbenennen von {folge}: {e.strerror}")
+    for file in sorted(videofiles.keys()):
+        new_name = videofiles[file][8]
+        folge_pfad = os.path.join(path, file)
+        neue_folge_pfad = os.path.join(path, new_name)
+        if folge_pfad == neue_folge_pfad:
+            new_name = rename_dialog.get_new_name(new_name)
+            if new_name is not None:
+                neue_folge_pfad = os.path.join(path, new_name)
+                os.replace(folge_pfad, neue_folge_pfad)
+        else:
+            try:
+                os.rename(folge_pfad, neue_folge_pfad)
+            except OSError as e:
+                    QMessageBox.critical(None, "Fehler beim Umbenennen", f"Fehler beim Umbenennen von {new_name}: {e.strerror}")
 
-
-def simulate_rename_dialog(Test_folgen):
-    app = get_application_instance()
-    rename_dialog = RenameDialog()
-    print(rename_dialog.get_new_name(Test_folgen))
 
 
 if __name__ == "__main__":
-    path = r"C:\Users\admin\Desktop\Test\Demon.Slayer.Kimetsu"
-    Animename = {'11 Eyes.S01E01-B-SH.mkv': ['Test', '01', '-B-SH'], '11 Eyes.S01E01-Strawhat.mkv': ['Test', '01', '-Strawhat'], '11 Eyes.S01E02-Strawhat.mkv': ['Test', '02', '-Strawhat'], '11 Eyes.S01E02.mkv': ['Test', '02', '-ABJ'], '11 Eyes.S01E03-B-SH.mkv': ['Test', '03', '-B-SH'], '11 Eyes.S01E03-Strawhat.mkv': ['Test', '03', '-Strawhat'], '11 Eyes.S01E04-B-SH.mkv': ['Test', '04', '-B-SH'], '11 Eyes.S01E04-Strawhat.mkv': ['Test', '04', '-Strawhat'], '11 Eyes.S01E05-B-SH.mkv': ['Test', '05', '-B-SH'], '11 Eyes.S01E05-Strawhat.mkv': ['Test', '05', '-Strawhat'], '11 Eyes.S01E06-B-SH.mkv': ['Test', '06', '-B-SH'], '11 Eyes.S01E06-Strawhat.mkv': ['Test', '06', '-Strawhat'], '11 Eyes.S01E07-B-SH.mkv': ['Test', '07', '-B-SH'], '11 Eyes.S01E07-Strawhat.mkv': ['Test', '07', '-Strawhat']}
-    sourcelist = ['.mp4', '.mov', '.avi', '.mkv']
-    AnimeType = ('S01', '')
-    Gruppe = "test"
-    inhalt = "Dämon"
-    Test_folgen = "namedjhfiojdkljkldjckljmckldjkljfkdjklcmkldmckldmckldmckldmckldmckldmckldmkldmkdmckld.S0104test.mkv"
-    folder_name = 'Demon.Slayer.Kimetsu 3'
-    folgen = ["Demon.Slayer.Kimetsu.S01E01","Demon.Slayer.Kimetsu.S01E02.mkv","Demon.Slayer.Kimetsu.S01E05.mkv"]  # Setze hier den Standardnamen ein
-    simulate_rename_dialog(Test_folgen)
+    path = r"C:\Users\admin\Desktop\MM!"
+    videofiles = {
+        'A Town Where You Live.Bonus.S01E01-GruppeKampfkuchen.mkv': ['Testffffffffffffffffffffffff', 'A Town Where You Live', 'AMV', '', '02', '01-23', 'GruppeKampfkuchen', '.mkv','A Town Where You Live.Bonus.S01E01-GruppeKampfkuchen.mkv'],
+        'MM__02.mkv': ['Test', 'A Town Where You Live', 'Film', '2012', '02', '02', 'GruppeKampfkuchen', '.mkv','A Town Where You Live.Bonus.S01E02-GruppeKampfkuchen.mkv'],
+        'MM__03.mkv': ['Test', 'A Town Where You Live', '', '', '00', '03', 'GruppeKampfkuchen', '.mkv','A Town Where You Live.Bonus.S01E03-GruppeKampfkuchen.mkv']
+    }
+    makethemagic(path, videofiles)
+    print(videofiles)

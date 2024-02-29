@@ -187,16 +187,17 @@ class FolgenlisteGUI(QWidget):
             ordner_name, dateiname, typ, jahr, staffel, episode, gruppe, dateiendung = videofiles[file]
 
             ordner_name_edit = QLineEdit(ordner_name)
+
             dateiname_edit = QLineEdit(dateiname)
             dateiname_edit.setMinimumWidth(200) 
             dateiname_edit.sizeHint = lambda: QSize(200, dateiname_edit.fontMetrics().height() + 6)
             dateiname_edit.adjustSize()
 
             comboBox_type = QComboBox()
+            comboBox_type.addItem(typ)
             comboBox_type.setEditable(True)
             comboBox_type.addItems(typ_liste)
             comboBox_type.setEditText(typ)
-            comboBox_type.setStyleSheet("color: black;")
 
             dateEdit_jahr = QDateEdit()
             dateEdit_jahr.setDate(QtCore.QDate.fromString(jahr, "yyyy"))
@@ -222,7 +223,8 @@ class FolgenlisteGUI(QWidget):
             # Setze die Textfarbe auf Schwarz
             ordner_name_edit.setStyleSheet("color: black;")
             dateiname_edit.setStyleSheet("color: black;")
-            comboBox_type.setStyleSheet("QComboBox QAbstractItemView { background-color: #D3D3D3; color: black;}")
+            comboBox_type.setStyleSheet("QComboBox { color: black; }")
+            comboBox_type.view().setStyleSheet("QComboBox QAbstractItemView { background-color: #D3D3D3; color: black;}")
             dateEdit_jahr.setStyleSheet("color: black;")
             spinBox_staffel.setStyleSheet("color: black;")
             Episode_edit.setStyleSheet("color: black;")

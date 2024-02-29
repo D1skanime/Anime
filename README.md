@@ -10,15 +10,16 @@ Die GUI wird mithilfe der PyQt5-Bibliothek erstellt. Diese muss auf dem System i
 Der Benutzer wählt zunächst das Verzeichnis aus, das die Anime-Folgen enthält oder ein Übergeordnetes Verzeichnis das mehrere Ordner enthält.
 In einem ersten Schritt werden weitere Ordner im Verzeichnis angezeigt. Die z.b von Emby und Jellyfin erstellt wurden.
 Man hat die möglichkeit diese anzuschauen und zu löschen.
-Dann werden alle Dateien ausser videosourcen angezeigt in einer Gui
-Man hat die möglichkeit alle Typen auf einmal zu löschen oder einzlen. Es werden auch typen wie .nfo oder .bif die Emby erstellt hat angezeigt und können alle aufeinmal gelöscht werden.
-Die Anwendung analysiert dann die Dateinamen, extrahiert relevante Informationen  wie Gruppenamen, die Folgen und Staffelnummer und der Type und zeigt sie in einer Liste an. Der Benutzer kann dann verschiedene Umbenennungsoptionen auswählen, wie z.B. die Anpassung von Staffalnummer, das Hinzufügen von Gruppennamen und das Zuweisen von type, Ordername, folgennamen.
+Dann werden alle Dateien ausser videosourcen n einer Gui angezeigt.
+Der Benutzer hat die Möglichkeit, alle Typen wie png jpg usw auf einmal oder einzeln zu löschen. 
+Es werden auch Typen wie .nfo oder .bif, die von Emby erstellt wurden, angezeigt und können alle auf einmal gelöscht werden.
+Die Anwendung analysiert dann die Dateinamen, extrahiert relevante Informationen  wie Gruppenamen, die Folgen und Staffelnummer und der Type und zeigt sie in einer Gui an. Der Benutzer kann dann verschiedene Umbenennungsoptionen auswählen, wie z.B. die Anpassung von Staffalnummer, das Hinzufügen von Gruppennamen und das Zuweisen von type, Ordername, folgennamen.
 
 Die GUI bietet eine Vorschau der vorgeschlagenen Änderungen, bevor der Benutzer die Umbenennung durchführt. Nach Bestätigung werden die ausgewählten Folgen umbenannt und die neue Ordnerstruktur wird erstellt.
-Das bestehnde Verzeichniss wird auf den neuen Namen unbenannt.
-Wenn es schon ein Verzeichnis mit dem Namen existiert wird der gesamte Inhalt in dieser Verzeichnis verschoben und das alte Verzeichnis gelöscht 
-Die Bearbeiten Verzeichnisse werden in eine Log Datei erfasst.
-Die Gruppen werden in einer Gruppen text Datei erfasst.
+Das bestehende Verzeichnis wird auf den neuen Namen umbenannt. 
+Wenn bereits ein Verzeichnis mit dem Namen existiert, wird der gesamte Inhalt in dieses Verzeichnis verschoben und das alte Verzeichnis gelöscht. 
+Die Bearbeiten Verzeichnisse werden in eine Logtext Datei erfasst.
+Die Gruppen werden in einer Gruppentext Datei erfasst.
 
 **Vorbedingungen:**
 
@@ -40,6 +41,4 @@ Um den Anime-Episoden-Organisierer auszuführen, müssen folgende Vorbedingungen
 6. Überprüfen Sie die Vorschau der Änderungen und editieren sie wo nötig.
 7. Klicken Sie auf "Speichern", um die ausgewählten Episoden umzubenennen.
 
-Der Episoden Organisier richtet sich an alle die User die den Namen von Anisearch behalten wollen jedoch das Staffel und Episoden tagging von tvdb verwenden müssen damit die Fansubs von Emby und Jellyfin erkannt werden. Aus diesem Grund wird nach dem folgenamen.Type eingetragen
-in dem Sinn Name.type.Staffe,Episode-Gruppe.
-Der Type wird nur bei Bonus, OVA,Tvspezial und ONA angewendet.
+Der Episodenorganisierer richtet sich an alle Benutzer, die den Namen von Anisearch beibehalten möchten, jedoch das Staffel- und Episoden-Tagging von TVDB verwenden müssen, damit die Fansubs von Emby und Jellyfin erkannt werden. Aus diesem Grund wird nach dem Folgenamen der Typ eingetragen, z.B. Name.type.Staffel,Episode-Gruppe. Der Typ wird nur bei Bonus, OVA, TV-Spezial und ONA angewendet.

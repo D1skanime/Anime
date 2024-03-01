@@ -62,9 +62,9 @@ class RenameDialog(QDialog):
         self.accept()
 
     def get_new_name(self, Test_folgen):
-        self.line_edit.setText(Test_folgen)  # Wert von Test_folgen in das Eingabefeld setzen
-        self.adjustSize()  # Größe des Dialogs aktualisieren
-        result = self.exec_()  # Dialog öffnen und warten, bis er geschlossen wird
+        self.line_edit.setText(Test_folgen) 
+        self.adjustSize()  
+        result = self.exec_()  
         if result == QDialog.Accepted:
             return self.line_edit.text()
         else:

@@ -60,7 +60,7 @@ def alle_funktionen(path_text, path, PathvonLogDatei, ordnername_orgin, source_l
     videofiles = tag_videofile(videofiles)
     videofiles = find_gruppe_in_videofile(videofiles)
     videofiles = find_folge_nummer(videofiles)
-    videofiles = create_gui(videofiles, path_text, typ_liste)
+    videofiles = create_gui(videofiles, path_text, typ_liste, path)
     videofiles = fix_nummer(videofiles)
     videofiles = buildnew_name(videofiles)
     makethemagic(path, videofiles)

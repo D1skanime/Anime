@@ -4,12 +4,13 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QSpinBox, QVBoxLayout, QScrollArea, QGridLayout, QLineEdit, QDateEdit, QSizePolicy, QComboBox,QHBoxLayout
 from PyQt5.QtCore import QSize, Qt
 from PyQt5 import QtCore
+import subprocess
 from app import app
 from style import apply_dark_theme
 
 
 class FolgenlisteGUI(QWidget):
-    def __init__(self, videofiles, gruppenliste, typ_liste):
+    def __init__(self, videofiles, gruppenliste, typ_liste, path_ordner):
         super().__init__()
         self.setWindowTitle("Folgenliste")
         self.resize(1500, 600)
@@ -166,6 +167,20 @@ class FolgenlisteGUI(QWidget):
         add_layout_gruppe.addWidget(pushButton_add_gruppe)
         layout.addLayout(add_layout_gruppe)
 
+        #Path
+        label_add_path = QLabel()
+        label_add_path.setObjectName("label_add_path")
+        label_add_path.setText("Schaue in den VidedateiOrdner")
+
+        pushButton_add_path = QPushButton('Anzeigen')
+        pushButton_add_path.setObjectName("pushButton_add_path")
+        pushButton_add_path.clicked.connect(self.open_anime_folder)
+
+        add_layout_path = QHBoxLayout()
+        add_layout_path.addWidget(label_add_path)
+        add_layout_path.addWidget(pushButton_add_path)
+        layout.addLayout(add_layout_path)
+
         # Setzen des Hauptlayouts für das Widget
         self.setLayout(layout)
 
@@ -319,13 +334,21 @@ class FolgenlisteGUI(QWidget):
     def resizeEvent(self, event):
         super().resizeEvent(event)
 
-def create_gui(videofiles, path, typ_liste):
+    def open_anime_folder(self):
+        try:
+            subprocess.Popen(['explorer', path_ordner], shell=True)
+        except Exception as e:
+            print("Fehler beim Öffnen des Ordners:", e)
+
+  
+
+def create_gui(videofiles, path, typ_liste, path_ordner):
     with open(path, "r+") as file:
         gruppenliste = file.read().splitlines()
     app = QApplication.instance()
     if app is None:
         app = QApplication(sys.argv)
-    gui = FolgenlisteGUI(videofiles, gruppenliste, typ_liste)
+    gui = FolgenlisteGUI(videofiles, gruppenliste, typ_liste, path_ordner)
     gui.show()
     app.exec_()
     return gui.videofiles
@@ -339,11 +362,13 @@ if __name__ == "__main__":
 
     path = r'C:\Users\admin\Desktop\Gruppen.txt'
 
+    path_ordner = r'C:\Users\admin\Desktop\Kurenai'
+
     videofiles = {
     'MM__01.mkv': ['Testffffffffffffffffffffffff', 'A Town Where You Live.', 'AMV', '', '02', '01-23', 'GruppeKampfkuchen', '.mkv'],
     'MM__02.mkv': ['Test', 'A Town Where You Live.', 'Film', '2012', '02', '02', 'GruppeKampfkuchen', '.mkv'],
     'MM__03.mkv': ['Test', 'A Town Where You Live.', '', '', '00', '03', 'GruppeKampfkuchen', '.mkv'],
 }
 
-    videofiles= create_gui(videofiles, path, typ_liste)
+    videofiles= create_gui(videofiles, path, typ_liste, path_ordner)
     print(videofiles)

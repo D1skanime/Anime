@@ -12,7 +12,7 @@ def fix_nummer(videofiles):
 
         # Prüfe, ob Jahr im Format jjjj ist, wenn nicht, mache jjjj
         if len(jahr) != 4 or not jahr.isdigit():
-            jahr = jahr[:4]
+            jahr = '(' + jahr[:4]+')'
             videofiles[file][3] = jahr
 
         # Prüfe, ob Staffel = xx ist, wenn nicht, mache 0x
@@ -25,11 +25,11 @@ def fix_nummer(videofiles):
             episode = episode.zfill(2) 
             videofiles[file][5] = episode
         #entferne alle Leerzeichen vor dem Text und nach dem Text
-            name = name.strip()
+            name = name.strip('.')
             videofiles[file][1] = name
         for char in SonderzeichenListe:
             ordner = ordner.replace(char, "")
-        ordner = ordner.strip()
+        ordner = ordner.strip('.')
         videofiles[file][0] = ordner
  
 
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     path = r'C:\Users\admin\Desktop\Gruppen.txt'
 
     videofiles = {
-    'MM__01.mkv': ['Testffffffffffffffffffffffff', 'A Town Where You Live.', 'AMV', '', '02', '01-23', 'GruppeKampfkuchen', '.mkv'],
+    'MM__01.mkv': ['Testffffffffffffffffffffffff  .', '  A Town Where You Live   .', 'AMV', '', '02', '01-23', 'GruppeKampfkuchen', '.mkv'],
     'MM__02.mkv': ['Test', 'A Town Where You Live.', 'Film', '2012-01-02', '2', '2', 'GruppeKampfkuchen', '.mkv'],
     'MM__03.mkv': ['Test', 'A Town Where You Live.', '', '', '0', '03', 'GruppeKampfkuchen', '.mkv'],
 }

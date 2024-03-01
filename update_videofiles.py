@@ -174,7 +174,7 @@ class FolgenlisteGUI(QWidget):
 
         pushButton_add_path = QPushButton('Anzeigen')
         pushButton_add_path.setObjectName("pushButton_add_path")
-        pushButton_add_path.clicked.connect(self.open_anime_folder)
+        pushButton_add_path.clicked.connect(lambda: self.open_anime_folder(path_ordner))
 
         add_layout_path = QHBoxLayout()
         add_layout_path.addWidget(label_add_path)
@@ -334,9 +334,9 @@ class FolgenlisteGUI(QWidget):
     def resizeEvent(self, event):
         super().resizeEvent(event)
 
-    def open_anime_folder(self):
+    def open_anime_folder(self, path_ordner):
         try:
-            subprocess.Popen(['explorer', path_ordner], shell=True)
+            os.startfile(path_ordner)
         except Exception as e:
             print("Fehler beim Öffnen des Ordners:", e)
 

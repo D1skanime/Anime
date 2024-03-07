@@ -25,11 +25,11 @@ def fix_nummer(videofiles):
             episode = episode.zfill(2) 
             videofiles[file][5] = episode
         #entferne alle Leerzeichen vor dem Text und nach dem Text
-            name = name.strip('.')
+            name = name.strip(' .')
             videofiles[file][1] = name
         for char in SonderzeichenListe:
             ordner = ordner.replace(char, "")
-        ordner = ordner.strip('.')
+        ordner = ordner.strip(' .')
         videofiles[file][0] = ordner
  
 

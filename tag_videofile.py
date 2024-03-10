@@ -17,10 +17,13 @@ def tag_videofile(videofiles, types):
                 if value[3]:
                     value[2] = 'Film'
                     value[4] = '0'
-                else: 
-                    value[4] = '1'  # Setze den Tag auf 'S01'
+                else:
+                    if value[4]:
+                        '' 
+                    else:
+                        value[4] = '1'  # Setze den Tag auf 'S01'
 
-    elif num_files < 5 and num_files > 1:
+    elif num_files == 5 and num_files > 1:
         for key, value in videofiles.items():
             for type_ in types:
                 if re.search(fr'\b{re.escape(type_)}\b', value[1], re.IGNORECASE):
@@ -33,7 +36,10 @@ def tag_videofile(videofiles, types):
                     value[2] = 'Film'
                     value[4] = '0'
                 else:
-                    value[4] = '1'  # Setze den Tag auf 'S01''
+                    if value[4]:
+                        ''
+                    else:
+                        value[4] = '1'  # Setze den Tag auf 'S01''
     else:
         for key, value in videofiles.items():
             for type_ in types:

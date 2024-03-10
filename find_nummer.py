@@ -7,9 +7,9 @@ import sys
 def find_folge_nummer(videofiles):
     for key, value in videofiles.items():
         #Sucht nach einem Muster wie "SxxExx" oder "SxxExxx" wie auch sxxexx
-        match = re.search(r"(.*?)([Ss]\d{2}[Ee]\d{2,3})", value[1])
+        match = re.search(r"^(.*?)([Ss]\d{2}[Ee]\d{2,3})(.*)$", value[1])
         if match:
-            value[1] = match.group(1)
+            value[1] = match.group(1) + match.group(3)
             # Extrahiere die Teile aus der Folgennummer
             folge_match = re.search(r"[Ss](\d{2})[Ee](\d{2,3})", match.group(2))
             if folge_match:
@@ -51,7 +51,7 @@ if __name__ == "__main__":
     videofiles =   {#ordner_name, dateiname, type, Jahr, Staffel, Episode, Gruppe, dateiendung
                     'MM__02.mkv': ['Test', 'Naruto 026-027 -hdhdh', '', '1920', '', '', 'unkekannt', '.mkv'],
                     'MM__04.mkv': ['Test', '[L-S] Natsume Yuujinchou S1 - 02', '', '', '', '', 'unkekannt', '.mkv'],
-                    'MM__05.mkv': ['Test', 'dmpd-mashle magic and muscles s01e17', '', '', '', '', 'unkekannt', '.mkv'],
+                    'MM__05.mkv': ['Test', 'Blue exorcist S03E05-Onigiri', '', '', '', '', 'unkekannt', '.mkv'],
                     'MM__06.mkv': ['Test', 'onigiri-blue exorcist s03e05', '', '', '', '', 'unkekannt', '.mkv'],
                     'MM__07.mkv': ['Test', 'stars-boruto e224', '', '', '', '', 'unkekannt', '.mkv'],
                     'MM__08.mkv': ['Test', 'Accel World EX OVA S00E01-M-L', '', '', '', '', 'unkekannt', '.mkv']

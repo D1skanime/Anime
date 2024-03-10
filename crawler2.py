@@ -57,9 +57,9 @@ def alle_funktionen(path_text, path, PathvonLogDatei, ordnername_orgin, source_l
     daten = os.listdir(path)
     videofiles = isvideofile(daten, ordnername_orgin, source_list)
     videofiles = remove_junke(videofiles)
-    videofiles = tag_videofile(videofiles)
-    videofiles = find_gruppe_in_videofile(videofiles)
     videofiles = find_folge_nummer(videofiles)
+    videofiles = find_gruppe_in_videofile(videofiles)
+    videofiles = tag_videofile(videofiles,typ_liste)
     videofiles = create_gui(videofiles, path_text, typ_liste, path)
     videofiles = fix_nummer(videofiles)
     videofiles = buildnew_name(videofiles)
@@ -88,7 +88,7 @@ def main():
     ]
 
     typ_liste = [
-        'OVA','Bonus','Film','AMV','TS','ONA'
+        'OVA','Bonus','Film','AMV','TS','ONA','WEB'
     ]
 
     try:

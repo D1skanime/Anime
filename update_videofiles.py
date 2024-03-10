@@ -365,9 +365,12 @@ if __name__ == "__main__":
     path_ordner = r'C:\Users\admin\Desktop\Kurenai'
 
     videofiles = {
-    'MM__01.mkv': ['Testffffffffffffffffffffffff', 'A Town Where You Live.', 'AMV', '', '02', '01-23', 'GruppeKampfkuchen', '.mkv'],
-    'MM__02.mkv': ['Test', 'A Town Where You Live.', 'Film', '2012', '02', '02', 'GruppeKampfkuchen', '.mkv'],
-    'MM__03.mkv': ['Test', 'A Town Where You Live.', '', '', '00', '03', 'GruppeKampfkuchen', '.mkv'],
+    'MM__02.mkv': ['Test', 'Naruto', 'Film', '1920', '0', '026-027', 'Hdhdh', '.mkv'],
+    'MM__04.mkv': ['Test', 'Natsume yuujinchou', '', '', '1', '02', 'L-s', '.mkv'],
+    'MM__05.mkv': ['Test', 'Mashle magic and muscles', '', '', '1', '17', 'Dmpd', '.mkv'],
+    'MM__06.mkv': ['Test', 'Blue exorcist', '', '', '1', '05', 'Onigiri', '.mkv'],
+    'MM__07.mkv': ['Test', 'Boruto', '', '', '1', '224', 'Stars', '.mkv'],
+    'MM__08.mkv': ['Test', 'Accel World EX  ', 'OVA', '', '1', '01', 'unkekannt', '.mkv']
 }
 
     videofiles= create_gui(videofiles, path, typ_liste, path_ordner)

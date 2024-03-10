@@ -23,18 +23,18 @@ def remove_junke(videofiles):
         remove_pattern_regex = '|'.join(map(re.escape, remove_patterns))
         value[1] = re.sub(remove_pattern_regex, '', value[1], flags=re.IGNORECASE)           
         #entferne alle _ mit ""
-        value[1] = value[1].replace('_', ' ')
-        print(value[1])             
+        value[1] = value[1].replace('_', ' ').replace('.', ' ')            
     return videofiles
 
 
 if __name__ == "__main__":
     videofiles =   {#ordner_name, dateiname, type, Jahr, Staffel, Episode, Gruppe, dateiendung
                     'MM__02.mkv': ['Test', 'Naruto_026-027_ger_Sub_Uncut(1920)(fjjff1575)-hdhdh[ghhjghji][4545fdfsd]', '', '', '', '', 'unkekannt', '.mkv'],
-                    'MM__04.mkv': ['Test', '[L-S] Natsume Yuujinchou S1 - 02.x264 (1280x720 h264 AAC)[C4B217BC].1080P_.aac-SNK', '', '', '', '', 'unkekannt', '.mkv'],
+                    'MM__04.mkv': ['Test', '[L-S] Natsume Yuujinchou S1 - 02.x264 (1280x720 h264 AAC)[C4B217BC].1080P_.aac', '', '', '', '', 'unkekannt', '.mkv'],
                     'MM__05.mkv': ['Test','dmpd-mashle.magic.and.muscles.s01e17.german.dl.anime.1080p.web.h264', '', '', '', '', 'unkekannt', '.mkv'],
                     'MM__06.mkv': ['Test','onigiri-blue.exorcist.s03e05.german.dl.anime.1080p.web.h264', '', '', '', '', 'unkekannt', '.mkv'],
-                    'MM__07.mkv': ['Test','stars-boruto.e224.1080p', '', '', '', '', 'unkekannt', '.mkv']
+                    'MM__07.mkv': ['Test','stars-boruto.e224.1080p', '', '', '', '', 'unkekannt', '.mkv'],
+                    'MM__08.mkv': ['Test','Accel World EX.OVA.S00E01-M-L', '', '', '', '', 'unkekannt', '.mkv']
                     }
     videofiles = remove_junke(videofiles)
     print(videofiles)

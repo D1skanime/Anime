@@ -22,12 +22,13 @@ def buildnew_name(videofiles):
     return videofiles        
 
 if __name__ == "__main__":
-    gruppenliste = ['aaa', 'bbbb', 'cc']
     videofiles = {
-        'MM__01.mkv': ['Testffffffffffffffffffffffff', 'A Town Where You Live', 'AMV', '', '02', '01-23', 'GruppeKampfkuchen', '.mkv'],
-        'MM__02.mkv': ['Test', 'A Town Where You Live', 'Film', '2012', '02', '02', 'GruppeKampfkuchen', '.mkv'],
-        'MM__03.mkv': ['Test', 'A Town Where You Live', '', '', '00', '03', 'GruppeKampfkuchen', '.mkv'],
-        'MM__04.mkv': ['Test', 'A Town Where You Live', 'Bonus', '', '00', '03', 'GruppeKampfkuchen', '.mkv']
+        'MM__02.mkv': ['Test(1920)', 'Naruto', 'Film', '(1920)', '00', '026-027', 'Hdhdh', '.mkv'],
+        'MM__04.mkv': ['Test', 'Natsume yuujinchou', '', '', '01', '02', 'L-s', '.mkv'],
+        'MM__05.mkv': ['Test', 'Mashle magic and muscles', '', '', '01', '17', 'Dmpd', '.mkv'],
+        'MM__06.mkv': ['Test', 'Blue exorcist', '', '', '01', '05', 'Onigiri', '.mkv'],
+        'MM__07.mkv': ['Test', 'Boruto', '', '', '01', '224', 'Stars', '.mkv'],
+        'MM__08.mkv': ['Test', 'Accel World EX', 'OVA', '', '01', '01', 'unkekannt', '.mkv']
     }
     videofiles = buildnew_name(videofiles)
     print(videofiles)

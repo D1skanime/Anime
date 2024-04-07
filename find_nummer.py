@@ -41,7 +41,18 @@ def find_folge_nummer(videofiles):
                         if match:
                             print(match)
                             value[1] = value[1].replace(match.group(0), "")
-                            value[5] = match.group(1)[1:]   
+                            value[5] = match.group(1)[1:]
+                        else:
+                            match = re.search(r'\b(\d+)\s+(\D+)\s+(\d+)\b', value[1])
+                            if match:
+                                value[1] = re.sub(rf'({re.escape(match.group(1))}|{re.escape(match.group(3))})', '', value[1])
+                                value[4] = match.group(1)
+                                value[5] = match.group(3)
+                            else:    
+                                match = re.search(r'\b\d+\b', value[1])
+                                if match:
+                                    value[1] = value[1].replace(match.group(0), "")
+                                    value[5] = match.group(0)    
                            
     return videofiles
 
@@ -54,7 +65,9 @@ if __name__ == "__main__":
                     'MM__05.mkv': ['Test', 'Blue exorcist S03E05-Onigiri', '', '', '', '', 'unkekannt', '.mkv'],
                     'MM__06.mkv': ['Test', 'onigiri-blue exorcist s03e05', '', '', '', '', 'unkekannt', '.mkv'],
                     'MM__07.mkv': ['Test', 'stars-boruto e224', '', '', '', '', 'unkekannt', '.mkv'],
-                    'MM__08.mkv': ['Test', 'Accel World EX OVA S00E01-M-L', '', '', '', '', 'unkekannt', '.mkv']
+                    'MM__08.mkv': ['Test', 'Accel World EX OVA S00E01-M-L', '', '', '', '', 'unkekannt', '.mkv'],
+                    'MM__09.mkv': ['Test', '[Pure-Ani-me] Macross Delta 01 ', '', '', '', '', 'unkekannt', '.mkv'],
+                    'MM__10.mkv': ['Test', 'Maria-sama ga miteru  2 Special 01', '', '', '', '', 'unkekannt', '.mkv']
                     }
     videofiles = find_folge_nummer(videofiles)
     print(videofiles)

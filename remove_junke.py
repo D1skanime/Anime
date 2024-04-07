@@ -19,7 +19,7 @@ def remove_junke(videofiles):
                     # Ersetzen Sie das gefundene Muster mit Klammern im Ersatzmuster
                     value[1] = re.sub(f'\s*\({match}\)', '', value[1]).strip()
         # Entfernen spezifischer Muster (unabhängig von der Groß- und Kleinschreibung)
-        remove_patterns = ['ger_Sub_', 'uncut', '.1080p', '.aac', '.web-dl', '.x264', 'folge', 'season', '.h264','.dl','.web','.anime','.german']
+        remove_patterns = ['ger_Sub_', 'uncut', '.1080p', '.aac', '.web-dl', '.x264', 'folge', 'season', '.h264','.dl','.web','.anime','.german', 'Ger Sub','ger-sub']
         remove_pattern_regex = '|'.join(map(re.escape, remove_patterns))
         value[1] = re.sub(remove_pattern_regex, '', value[1], flags=re.IGNORECASE)           
         #entferne alle _ mit ""
@@ -34,7 +34,11 @@ if __name__ == "__main__":
                     'MM__05.mkv': ['Test','dmpd-mashle.magic.and.muscles.s01e17.german.dl.anime.1080p.web.h264', '', '', '', '', 'unkekannt', '.mkv'],
                     'MM__06.mkv': ['Test','onigiri-blue.exorcist.s03e05.german.dl.anime.1080p.web.h264', '', '', '', '', 'unkekannt', '.mkv'],
                     'MM__07.mkv': ['Test','stars-boruto.e224.1080p', '', '', '', '', 'unkekannt', '.mkv'],
-                    'MM__08.mkv': ['Test','Accel World EX.OVA.S00E01-M-L', '', '', '', '', 'unkekannt', '.mkv']
+                    'MM__08.mkv': ['Test','Accel World EX.OVA.S00E01-M-L', '', '', '', '', 'unkekannt', '.mkv'],
+                    'MM__09.mkv': ['Test','[Pure-Ani-me] Macross Delta 01 Ger Sub', '', '', '', '', 'unkekannt', '.mkv'],
+                    'MM__10.mkv': ['Test','Maria-sama ga miteru Season 2 Special 01', '', '', '', '', 'unkekannt', '.mkv']
+                    
+                
                     }
     videofiles = remove_junke(videofiles)
     print(videofiles)

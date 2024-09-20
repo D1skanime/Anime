@@ -7,17 +7,17 @@ def buildnew_name(videofiles):
         ordner_name, dateiname, typ, Jahr, Staffel, Episode, Gruppe, dateiendung = videofiles[file]
         # Überprüfung, ob Film 
         if len(Jahr) > 0 and typ == "Film":
-            neue_folge_name = f"{dateiname}.{Jahr}-{Gruppe}{dateiendung}"
+            neue_folge_name = f"{dateiname}. {Jahr}-{Gruppe}{dateiendung}"
             videofiles[file].append(neue_folge_name)
         elif len(typ) == 0:
             # Serie
-            neue_folge_name = f"{dateiname}.S{Staffel}E{Episode}-{Gruppe}{dateiendung}"
+            neue_folge_name = f"{dateiname}. S{Staffel}E{Episode}-{Gruppe}{dateiendung}"
             videofiles[file].append(neue_folge_name)
         elif typ == "AMV":
-            neue_folge_name = f"{dateiname}.{typ}.E{Episode}-{Gruppe}{dateiendung}"
+            neue_folge_name = f"{dateiname}. {typ} S{Staffel}E{Episode}-{Gruppe}{dateiendung}"
             videofiles[file].append(neue_folge_name)    
         else:    
-            neue_folge_name = f"{dateiname}.{typ}.S{Staffel}E{Episode}-{Gruppe}{dateiendung}"
+            neue_folge_name = f"{dateiname}. {typ} S{Staffel}E{Episode}-{Gruppe}{dateiendung}"
             videofiles[file].append(neue_folge_name)
     return videofiles        
 

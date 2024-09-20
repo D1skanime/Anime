@@ -48,7 +48,7 @@ class FolgenlisteGUI(QWidget):
         layout.addLayout(add_layout_ordnername)
         
 
-        # 1. Dateiname
+        # 2. Dateiname
         label_add_videofile_name = QLabel()
         label_add_videofile_name.setObjectName("label_add_videofile_name")
         label_add_videofile_name.setText("Ändere Dateiname")
@@ -72,7 +72,7 @@ class FolgenlisteGUI(QWidget):
         # Horizontales Layout dem Hauptlayout hinzufügen
         layout.addLayout(add_layout_dateiname)
 
-        #Type
+        #3. Type
         label_add_type = QLabel()
         label_add_type.setObjectName("label_add_type")
         label_add_type.setText("Ändere Type")
@@ -96,7 +96,7 @@ class FolgenlisteGUI(QWidget):
         add_layout_type.addWidget(pushButton_add_type)
         layout.addLayout(add_layout_type)
 
-        #Jahr
+        #4. Jahr
         label_add_jahr = QLabel()
         label_add_jahr.setObjectName("label_add_jahr")
         label_add_jahr.setText("Ändere Jahr")
@@ -120,7 +120,7 @@ class FolgenlisteGUI(QWidget):
         add_layout_jahr.addWidget(pushButton_add_jahr)
         layout.addLayout(add_layout_jahr)
 
-        #Staffel
+        #5. Staffel
         label_add_staffel = QLabel("Übernehmen")
         label_add_staffel.setObjectName("label_add_staffel")
         label_add_staffel.setText("Ändere Staffelnummer")
@@ -143,7 +143,27 @@ class FolgenlisteGUI(QWidget):
         add_layout_staffel.addWidget(pushButton_add_staffel)
         layout.addLayout(add_layout_staffel)
 
-        #Gruppe
+        #6. Eingabefeld und Button für Episode-Auto-Fill
+        label_episode_start = QLabel()
+        label_episode_start.setText("Startwert für Episoden")
+
+        lineEdit_episode_start = QLineEdit()
+        lineEdit_episode_start.setMinimumWidth(100)
+        lineEdit_episode_start.setStyleSheet("color: black;")
+
+
+        pushButton_fill_episodes = QPushButton("Episoden automatisch füllen")
+        pushButton_fill_episodes.clicked.connect(lambda: self.fill_episodes(int(lineEdit_episode_start.text())))
+
+        # Horizontales Layout für Episoden-Auto-Fill erstellen
+        add_layout_episode_fill = QHBoxLayout()
+        add_layout_episode_fill.addWidget(label_episode_start)
+        add_layout_episode_fill.addWidget(lineEdit_episode_start)
+        add_layout_episode_fill.addWidget(pushButton_fill_episodes)
+        layout.addLayout(add_layout_episode_fill)
+
+
+        #7. Gruppe
         label_add_gruppe = QLabel()
         label_add_gruppe.setObjectName("label_add_gruppe")
         label_add_gruppe.setText("Ändere Gruppe")
@@ -307,7 +327,18 @@ class FolgenlisteGUI(QWidget):
             elif isinstance(widget, QDateEdit):
                 widget.setDate(QtCore.QDate.fromString(new_filename, "yyyy"))
             elif isinstance(widget, QSpinBox):
-                widget.setValue(int(new_filename))    
+                widget.setValue(int(new_filename)) 
+
+    def fill_episodes(self, start_value):
+        episode_index = 5  # Der Index der Episoden-Felder in der entry_boxes-Liste (5. Feld in jeder Zeile)
+
+        # Iteriere über alle Episode-Felder in der entry_boxes-Liste
+        for i in range(episode_index, len(self.entry_boxes), 8):
+            widget = self.entry_boxes[i]
+            if isinstance(widget, QLineEdit):  # Sicherstellen, dass das Feld ein QLineEdit ist (Episode)
+                widget.setText(str(start_value))
+                start_value += 1  # Erhöhe den Startwert für die nächste Episode
+               
 
     def save_changes(self):
         index = 0

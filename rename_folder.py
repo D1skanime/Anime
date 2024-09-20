@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import  QMessageBox
 
 
 def rename_folder(path, new_ordername, ordnername_orgin):
+    #Erstelle backdrops ordner
+    os.makedirs(os.path.join(path, "backdrops"))
     #Orderprüfem
     path = os.path.dirname(path)
     if ordnername_orgin == new_ordername:

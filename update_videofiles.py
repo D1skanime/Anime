@@ -316,7 +316,7 @@ class FolgenlisteGUI(QWidget):
         self.setLayout(layout)
         self.videofiles = videofiles
 
-    # Methode zum Einfügen des Dateinamens in alle Felder
+    # Funktion zum Einfügen des Dateinamens in alle Felder
     def insert_filename(self, new_filename, index):
         for i in range(index, len(self.entry_boxes), 8):
             widget = self.entry_boxes[i]
@@ -327,22 +327,22 @@ class FolgenlisteGUI(QWidget):
             elif isinstance(widget, QDateEdit):
                 widget.setDate(QtCore.QDate.fromString(new_filename, "yyyy"))
             elif isinstance(widget, QSpinBox):
-                widget.setValue(int(new_filename)) 
+                widget.setValue(int(new_filename))
 
+    # Funktion zum automatischen Befüllen der Episodenliste
     def fill_episodes(self, start_value):
         episode_index = 5  # Der Index der Episoden-Felder in der entry_boxes-Liste (5. Feld in jeder Zeile)
-
         # Iteriere über alle Episode-Felder in der entry_boxes-Liste
         for i in range(episode_index, len(self.entry_boxes), 8):
             widget = self.entry_boxes[i]
-            if isinstance(widget, QLineEdit):  # Sicherstellen, dass das Feld ein QLineEdit ist (Episode)
+            if isinstance(widget, QLineEdit): 
                 widget.setText(str(start_value))
-                start_value += 1  # Erhöhe den Startwert für die nächste Episode
+                start_value += 1 
                
-
+    # Funktion zum Speichern der Änderungen
     def save_changes(self):
         index = 0
-        for key, value in self.videofiles.items():
+        for key, value in sorted(self.videofiles.items()):
             updated_values = []
             for box in self.entry_boxes[index:index+len(value)]:
                 if isinstance(box, QLineEdit):
@@ -396,13 +396,16 @@ if __name__ == "__main__":
     path_ordner = r'C:\Users\admin\Desktop\Kurenai'
 
     videofiles = {
-    'MM__02.mkv': ['Test', 'Naruto', 'Film', '1920', '0', '026-027', 'Hdhdh', '.mkv'],
-    'MM__04.mkv': ['Test', 'Natsume yuujinchou', '', '', '1', '02', 'L-s', '.mkv'],
-    'MM__05.mkv': ['Test', 'Mashle magic and muscles', '', '', '1', '17', 'Dmpd', '.mkv'],
-    'MM__06.mkv': ['Test', 'Blue exorcist', '', '', '1', '05', 'Onigiri', '.mkv'],
-    'MM__07.mkv': ['Test', 'Boruto', '', '', '1', '224', 'Stars', '.mkv'],
-    'MM__08.mkv': ['Test', 'Accel World EX  ', 'OVA', '', '1', '01', 'unkekannt', '.mkv']
+    'a place to bloom.AMV-Hilary_Cullen.mp4': ['2016', 'Hilary cullen', '', '', '1', '', 'A place to bloom amv', '.mp4'],
+    'A Tale of Demons Magic and Insanity.AMV-KenjiKyou.mp4': ['2017', 'A tale of demons magic and insanity ', 'AMV', '', '0', '', 'Kenjikyou', '.mp4'],
+    'Absolutely save you.AMV-jinshi.mp4': ['2018', 'Absolutely save you ', 'AMV', '', '0', '', 'Jinshi', '.mp4'], 'All Alone.AMV-aias.mp4': ['2017', 'All alone ', 'AMV', '', '0', '', 'Aias', '.mp4'],
+    'All that you cant leave behind.AMV-ScorpionsUltd.mp4': ['2019', 'All that you cant leave behind ', 'AMV', '', '0', '', 'Scorpionsultd', '.mp4'], 'Alone.AMV-KenjiKyou.mp4': ['2017', 'Alone ', 'AMV', '', '0', '', 'Kenjikyou', '.mp4'],
+    'Angels Memories.AMV-cecco.mp4': ['2020', 'Angels memories ', 'AMV', '', '0', '', 'Cecco', '.mp4'], 'Another Day.AMV-Wormwood.avi': ['2017', 'Another day ', 'AMV', '', '0', '', 'Wormwood', '.avi'],
+    'in-si-de-sa-in.AMV-zzerg.mp4': ['2021', 'In-si-de-sa-in ', 'AMV', '', '0', '', 'Zzerg', '.mp4'], 'Inner Demons.AMV-XIII.mp4': ['2017', 'Inner demons ', 'AMV', '', '0', '', 'Xiii', '.mp4'],
+    'Insanity.AMV-Nurikokourin.mp4': ['2022', 'Insanity ', 'AMV', '', '0', '', 'Nurikokourin', '.mp4']
 }
+    
+
 
     videofiles= create_gui(videofiles, path, typ_liste, path_ordner)
     print(videofiles)

@@ -14,7 +14,7 @@ def buildnew_name(videofiles):
             neue_folge_name = f"{dateiname}. S{Staffel}E{Episode}-{Gruppe}{dateiendung}"
             videofiles[file].append(neue_folge_name)
         elif typ == "AMV":
-            neue_folge_name = f"{dateiname}. {typ} S{Staffel}E{Episode}-{Gruppe}{dateiendung}"
+            neue_folge_name = f"{dateiname}. {typ}.S{Staffel}E{Episode}-{Gruppe}{dateiendung}"
             videofiles[file].append(neue_folge_name)    
         else:    
             neue_folge_name = f"{dateiname}. {typ} S{Staffel}E{Episode}-{Gruppe}{dateiendung}"

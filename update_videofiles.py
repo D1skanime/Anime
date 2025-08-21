@@ -2,8 +2,10 @@ import os
 import re
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QSpinBox, QVBoxLayout, QScrollArea, QGridLayout, QLineEdit, QDateEdit, QSizePolicy, QComboBox,QHBoxLayout
+from PyQt5.QtGui import QIntValidator
 from PyQt5.QtCore import QSize, Qt
 from PyQt5 import QtCore
+from PyQt5.QtCore import QEvent
 import subprocess
 from app import app
 from style import apply_dark_theme
@@ -19,6 +21,7 @@ class FolgenlisteGUI(QWidget):
         layout = QVBoxLayout()
 
         scroll_area = QScrollArea(self)
+        scroll_area.setWidgetResizable(True)
         scroll_widget = QWidget()
         scroll_layout = QVBoxLayout()
 
@@ -26,180 +29,117 @@ class FolgenlisteGUI(QWidget):
 
 
         # 1. Ordnername
-        label_add_ordner_name = QLabel()
-        label_add_ordner_name.setText("Ändere Ordnername")
+
         lineEdit_add_ordner_name = QLineEdit()
-        lineEdit_add_ordner_name.setMinimumWidth(200)
         lineEdit_add_ordner_name.setText(videofiles[next(iter(videofiles))][0])
         lineEdit_add_ordner_name.setCursorPosition(0)
-
-        pushButton_add_ordner_name = QPushButton("Übernehmen")
-        pushButton_add_ordner_name.setObjectName("pushButton_add_ordner_name")
-        pushButton_add_ordner_name, 0, 2, 1, 1
-        pushButton_add_ordner_name.clicked.connect(lambda: self.insert_filename(lineEdit_add_ordner_name.text(),0))
-        
-        # Horizontales Layout für Ordnername erstellen
-        add_layout_ordnername = QHBoxLayout()
-        add_layout_ordnername.addWidget(label_add_ordner_name)
-        add_layout_ordnername.addWidget(lineEdit_add_ordner_name)
-        add_layout_ordnername.addWidget(pushButton_add_ordner_name)
-
-        # Horizontales Layout dem Hauptlayout hinzufügen
-        layout.addLayout(add_layout_ordnername)
-        
+        layout.addLayout(self._row(
+             "Ändere Ordnername",
+            lineEdit_add_ordner_name,
+            "Übernehmen",
+            lambda: self.insert_filename(lineEdit_add_ordner_name.text(), 0)
+))    
 
         # 2. Dateiname
-        label_add_videofile_name = QLabel()
-        label_add_videofile_name.setObjectName("label_add_videofile_name")
-        label_add_videofile_name.setText("Ändere Dateiname")
 
         lineEdit_add_videofile_name = QLineEdit()
-        lineEdit_add_videofile_name.setObjectName("lineEdit_add_videofile_name")
-        lineEdit_add_videofile_name.setText(videofiles[next(iter(videofiles))][1])
-        lineEdit_add_videofile_name.setStyleSheet("color: black;")
+        first_key = next(iter(videofiles))
+        lineEdit_add_videofile_name.setText(videofiles[first_key][1])
         lineEdit_add_videofile_name.setCursorPosition(0)
+        lineEdit_add_videofile_name.setClearButtonEnabled(True)
+        self._autosize_lineedit_to_text(lineEdit_add_videofile_name, cap_px=1200)
+        layout.addLayout(self._row(
+            "Ändere Dateiname",
+            lineEdit_add_videofile_name,
+            "Übernehmen",
+            lambda: self.insert_filename(lineEdit_add_videofile_name.text(), 1)
+        ))
 
-        pushButton_add_videofile_name = QPushButton("Übernehmen")
-        pushButton_add_videofile_name.setObjectName("pushButton_add_videofile_name")
-        pushButton_add_videofile_name.clicked.connect(lambda: self.insert_filename(lineEdit_add_videofile_name.text(),1))
-
-        # Horizontales Layout für Dateiname erstellen
-        add_layout_dateiname = QHBoxLayout()
-        add_layout_dateiname.addWidget(label_add_videofile_name)
-        add_layout_dateiname.addWidget(lineEdit_add_videofile_name)
-        add_layout_dateiname.addWidget(pushButton_add_videofile_name)
-
-        # Horizontales Layout dem Hauptlayout hinzufügen
-        layout.addLayout(add_layout_dateiname)
 
         #3. Type
-        label_add_type = QLabel()
-        label_add_type.setObjectName("label_add_type")
-        label_add_type.setText("Ändere Type")
 
         comboBox_add_type = QComboBox()
-        comboBox_add_type.setObjectName("comboBox_add_type")
-        comboBox_add_type.addItem(videofiles[next(iter(videofiles))][2])
-        comboBox_add_type.setEditText(videofiles[next(iter(videofiles))][2])
-        comboBox_add_type.setStyleSheet("QComboBox { color: black; } QComboBox QAbstractItemView { background-color: #D3D3D3; color: black; }")
         comboBox_add_type.setEditable(True)
         comboBox_add_type.addItems(typ_liste)
-
-        pushButton_add_type = QPushButton("Übernehmen")
-        pushButton_add_type.setObjectName("pushButton_add_type")
-        pushButton_add_type.clicked.connect(lambda: self.insert_filename(comboBox_add_type.currentText(),2))
-
-        # Horizontales Layout für Dateiname erstellen
-        add_layout_type = QHBoxLayout()
-        add_layout_type.addWidget(label_add_type)
-        add_layout_type.addWidget(comboBox_add_type)
-        add_layout_type.addWidget(pushButton_add_type)
-        layout.addLayout(add_layout_type)
+        comboBox_add_type.setCurrentText(videofiles[next(iter(videofiles))][2])
+        comboBox_add_type.setMinimumContentsLength(12)
+        comboBox_add_type.setSizeAdjustPolicy(QComboBox.AdjustToContents)
+        layout.addLayout(self._row(
+            "Ändere Type",
+            comboBox_add_type,
+            "Übernehmen",
+            lambda: self.insert_filename(comboBox_add_type.currentText(), 2)
+        ))
+  
 
         #4. Jahr
-        label_add_jahr = QLabel()
-        label_add_jahr.setObjectName("label_add_jahr")
-        label_add_jahr.setText("Ändere Jahr")
-
         dateEdit_add_jahr = QDateEdit()
-        dateEdit_add_jahr.setObjectName("dateEdit_add_jahr")
-        dateEdit_add_jahr.setDate(QtCore.QDate.fromString(videofiles[next(iter(videofiles))][3], "yyyy"))
-        dateEdit_add_jahr.setCalendarPopup(False)
         dateEdit_add_jahr.setDisplayFormat("yyyy")
-        dateEdit_add_jahr.setStyleSheet("color: black;")
-
-
-        pushButton_add_jahr = QPushButton("Übernehmen")
-        pushButton_add_jahr.setObjectName("pushButton_add_jahr")
-        pushButton_add_jahr.clicked.connect(lambda: self.insert_filename(dateEdit_add_jahr.date().toString("yyyy"),3))
-
-        # Horizontales Layout für Dateiname erstellen
-        add_layout_jahr = QHBoxLayout()
-        add_layout_jahr.addWidget(label_add_jahr)
-        add_layout_jahr.addWidget(dateEdit_add_jahr)
-        add_layout_jahr.addWidget(pushButton_add_jahr)
-        layout.addLayout(add_layout_jahr)
+        dateEdit_add_jahr.setCalendarPopup(False)
+        dateEdit_add_jahr.setDate(QtCore.QDate.fromString(videofiles[next(iter(videofiles))][3], "yyyy"))
+        dateEdit_add_jahr.setFixedWidth(100)  # klein halten
+        layout.addLayout(self._row(
+            "Ändere Jahr",
+            dateEdit_add_jahr,
+            "Übernehmen",
+            lambda: self.insert_filename(dateEdit_add_jahr.date().toString("yyyy"), 3),
+            expand=False
+        ))
 
         #5. Staffel
-        label_add_staffel = QLabel("Übernehmen")
-        label_add_staffel.setObjectName("label_add_staffel")
-        label_add_staffel.setText("Ändere Staffelnummer")
-
         spinBox_add_staffel = QSpinBox()
-        spinBox_add_staffel.setObjectName("spinBox_add_staffel")
-        spinBox_add_staffel.setMaximum(999)
+        spinBox_add_staffel.setRange(0, 999)
         spinBox_add_staffel.setValue(int(videofiles[next(iter(videofiles))][4]))
-        spinBox_add_staffel.setStyleSheet("color: black;")
-            
+        spinBox_add_staffel.setFixedWidth(100)
 
-        pushButton_add_staffel = QPushButton("Übernehmen")
-        pushButton_add_staffel.setObjectName("pushButton_add_staffel")
-        pushButton_add_staffel.clicked.connect(lambda: self.insert_filename(spinBox_add_staffel.value(),4))
-
-        # Horizontales Layout für Dateiname erstellen
-        add_layout_staffel = QHBoxLayout()
-        add_layout_staffel.addWidget(label_add_staffel)
-        add_layout_staffel.addWidget(spinBox_add_staffel)
-        add_layout_staffel.addWidget(pushButton_add_staffel)
-        layout.addLayout(add_layout_staffel)
+        layout.addLayout(self._row(
+            "Ändere Staffelnummer",
+            spinBox_add_staffel,
+            "Übernehmen",
+            lambda: self.insert_filename(spinBox_add_staffel.value(), 4),
+            expand=False
+        ))
 
         #6. Eingabefeld und Button für Episode-Auto-Fill
-        label_episode_start = QLabel()
-        label_episode_start.setText("Startwert für Episoden")
+        spin_episode_start = QSpinBox()
+        spin_episode_start.setRange(1, 9999)
+        spin_episode_start.setValue(1)
+        spin_episode_start.setFixedWidth(100)
 
-        lineEdit_episode_start = QLineEdit()
-        lineEdit_episode_start.setMinimumWidth(100)
-        lineEdit_episode_start.setStyleSheet("color: black;")
-
-
-        pushButton_fill_episodes = QPushButton("Episoden automatisch füllen")
-        pushButton_fill_episodes.clicked.connect(lambda: self.fill_episodes(int(lineEdit_episode_start.text())))
-
-        # Horizontales Layout für Episoden-Auto-Fill erstellen
-        add_layout_episode_fill = QHBoxLayout()
-        add_layout_episode_fill.addWidget(label_episode_start)
-        add_layout_episode_fill.addWidget(lineEdit_episode_start)
-        add_layout_episode_fill.addWidget(pushButton_fill_episodes)
-        layout.addLayout(add_layout_episode_fill)
+        layout.addLayout(self._row(
+            "Startwert für Episoden",
+            spin_episode_start,
+            "Episoden automatisch füllen",
+            lambda: self.fill_episodes(spin_episode_start.value()),
+            expand=False,
+            btn_min_w=220
+        ))
 
 
         #7. Gruppe
-        label_add_gruppe = QLabel()
-        label_add_gruppe.setObjectName("label_add_gruppe")
-        label_add_gruppe.setText("Ändere Gruppe")
-
         comboBox_add_gruppe = QComboBox()
-        comboBox_add_gruppe.setObjectName("comboBox_add_gruppe")
-        comboBox_add_gruppe.addItem(videofiles[next(iter(videofiles))][6])
-        comboBox_add_gruppe.setEditText(videofiles[next(iter(videofiles))][6])
-        comboBox_add_gruppe.setStyleSheet("QComboBox { color: black; } QComboBox QAbstractItemView { background-color: #D3D3D3; color: black; }")
         comboBox_add_gruppe.setEditable(True)
         comboBox_add_gruppe.addItems(gruppenliste)
-
-        pushButton_add_gruppe = QPushButton('Übernehmen')
-        pushButton_add_gruppe.setObjectName("pushButton_add_gruppe")
-        pushButton_add_gruppe.clicked.connect(lambda: self.insert_filename(comboBox_add_gruppe.currentText(),6))
-
-        # Horizontales Layout für Dateiname erstellen
-        add_layout_gruppe = QHBoxLayout()
-        add_layout_gruppe.addWidget(label_add_gruppe)
-        add_layout_gruppe.addWidget(comboBox_add_gruppe)
-        add_layout_gruppe.addWidget(pushButton_add_gruppe)
-        layout.addLayout(add_layout_gruppe)
+        comboBox_add_gruppe.setCurrentText(videofiles[next(iter(videofiles))][6])
+        comboBox_add_gruppe.setMinimumContentsLength(12)
+        comboBox_add_gruppe.setSizeAdjustPolicy(QComboBox.AdjustToContents)
+        layout.addLayout(self._row(
+            "Ändere Gruppe",
+            comboBox_add_gruppe,
+            "Übernehmen",
+            lambda: self.insert_filename(comboBox_add_gruppe.currentText(), 6)
+        ))
 
         #Path
-        label_add_path = QLabel()
-        label_add_path.setObjectName("label_add_path")
-        label_add_path.setText("Schaue in den VidedateiOrdner")
-
-        pushButton_add_path = QPushButton('Anzeigen')
-        pushButton_add_path.setObjectName("pushButton_add_path")
-        pushButton_add_path.clicked.connect(lambda: self.open_anime_folder(path_ordner))
-
-        add_layout_path = QHBoxLayout()
-        add_layout_path.addWidget(label_add_path)
-        add_layout_path.addWidget(pushButton_add_path)
-        layout.addLayout(add_layout_path)
+        dummy = QLineEdit()  # nur als Platzhalter, read-only
+        dummy.setReadOnly(True)
+        dummy.setPlaceholderText("Schaue in den Videodatei-Ordner")
+        layout.addLayout(self._row(
+            "Schauen in Ordner",
+            dummy,
+            "Anzeigen",
+            lambda: self.open_anime_folder(path_ordner)
+        ))
 
         # Setzen des Hauptlayouts für das Widget
         self.setLayout(layout)
@@ -218,6 +158,8 @@ class FolgenlisteGUI(QWidget):
 
         count = 0
         grid_layout = QGridLayout()
+        cols = 8
+        grid_row = 0
         for file in sorted(videofiles.keys()):
             ordner_name, dateiname, typ, jahr, staffel, episode, gruppe, dateiendung = videofiles[file]
 
@@ -285,38 +227,137 @@ class FolgenlisteGUI(QWidget):
             ordner_name_edit.setEnabled(False)
             dateiendung_edit.setEnabled(False)
 
-            grid_layout.addWidget(ordner_name_edit, count, 0)
-            grid_layout.addWidget(dateiname_edit, count, 1)
-            grid_layout.addWidget(comboBox_type, count, 2)
-            grid_layout.addWidget(dateEdit_jahr, count, 3)
-            grid_layout.addWidget(spinBox_staffel, count, 4)
-            grid_layout.addWidget(Episode_edit, count, 5)
-            grid_layout.addWidget(Gruppe_edit, count, 6)
-            grid_layout.addWidget(dateiendung_edit, count, 7)
+            grid_layout.addWidget(ordner_name_edit, grid_row, 0)
+            grid_layout.addWidget(dateiname_edit, grid_row, 1)
+            grid_layout.addWidget(comboBox_type, grid_row, 2)
+            grid_layout.addWidget(dateEdit_jahr, grid_row, 3)
+            grid_layout.addWidget(spinBox_staffel, grid_row, 4)
+            grid_layout.addWidget(Episode_edit, grid_row, 5)
+            grid_layout.addWidget(Gruppe_edit, grid_row, 6)
+            grid_layout.addWidget(dateiendung_edit, grid_row, 7)
+
+            orig_label = QLabel(file)  # dict-key = Originaldatei
+            orig_label.setObjectName("origLabel")
+            orig_label.setTextInteractionFlags(Qt.TextSelectableByMouse)  # kopierbar
+            orig_label.setToolTip(file)            # Volltext beim Hover
+            orig_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+            orig_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+            self._make_elided_label(orig_label, file) # << neu: Ellipsis
+
+
+            grid_layout.addWidget(orig_label, grid_row + 1, 0, 1, cols)
 
             self.entry_boxes.extend([ordner_name_edit, dateiname_edit, comboBox_type, dateEdit_jahr, spinBox_staffel, Episode_edit, Gruppe_edit, dateiendung_edit])
 
+            if count % 2 == 1:
+                orig_label.setProperty("rowAlt", True)
+                orig_label.style().unpolish(orig_label); orig_label.style().polish(orig_label)
+
+            grid_row += 2
             count += 1
 
         scroll_layout.addLayout(grid_layout)
         scroll_widget.setLayout(scroll_layout)
         scroll_area.setWidget(scroll_widget)
-        layout.addWidget(scroll_area)
+        self.scroll_area = scroll_area
+        layout.addWidget(self.scroll_area, 1)
+        self.scroll_area.setWidgetResizable(True)
+
+        self.grid_layout = grid_layout
+        QtCore.QTimer.singleShot(0, lambda: self.ensure_min_visible_rows(13))
+
+        #Main Buttons Layout
+
+        buttons_bar = QHBoxLayout()
+        buttons_bar.addStretch(1)
 
         save_button = QPushButton("Speichern")
-        save_button.setStyleSheet("background-color: blue; color: white; font-weight: bold;")
+        save_button.setObjectName("primary")
+        save_button.setFixedHeight(36)
+
+        #save_button.setStyleSheet("background-color: blue; color: white; font-weight: bold;")
         save_button.clicked.connect(self.save_changes)
-        layout.addWidget(save_button)
+        #layout.addWidget(save_button)
 
         cancel_button = QPushButton("Abbrechen und Programm beenden")
-        cancel_button.setStyleSheet("background-color: red; color: white; font-weight: bold;") 
+        cancel_button.setObjectName("danger")
+        cancel_button.setFixedHeight(36)
+        #cancel_button.setStyleSheet("background-color: red; color: white; font-weight: bold;") 
         cancel_button.clicked.connect(self.on_cancel_clicked)
-        layout.addWidget(cancel_button)
+        #layout.addWidget(cancel_button)
+
+        buttons_bar.addWidget(cancel_button)
+        buttons_bar.addWidget(save_button)
+        layout.addLayout(buttons_bar)
 
         self.setLayout(layout)
         self.videofiles = videofiles
 
-    # Methode zum Einfügen des Dateinamens in alle Felder
+
+    #Funktion für eine einheitliche Formularzeile
+    def _row(self, label_text, editor, btn_text=None, btn_slot=None, expand=True, btn_min_w=None):
+        h = QHBoxLayout()
+        h.setSpacing(8)
+
+        lbl = QLabel(label_text)
+        lbl.setFixedWidth(170)
+        lbl.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+
+        if expand:
+            editor.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        else:
+            editor.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+
+        h.addWidget(lbl)
+        h.addWidget(editor, 1)  # <— Editor erhält Stretch
+        if btn_text:
+            btn = QPushButton(btn_text)
+            if btn_min_w:
+                btn.setMinimumWidth(btn_min_w)
+            if btn_slot:
+                btn.clicked.connect(btn_slot)
+            h.addWidget(btn)      # Button ohne Stretch
+        return h
+
+    def _autosize_lineedit_to_text(self, lineedit: QLineEdit, cap_px: int = 1200, padding: int = 24):
+        fm = lineedit.fontMetrics()
+        def adjust():
+            w = fm.horizontalAdvance(lineedit.text()) + padding
+            lineedit.setMinimumWidth(min(w, cap_px))
+        lineedit.textChanged.connect(adjust)
+        adjust()
+
+    def _make_elided_label(self, label: QLabel, full_text: str, mode=Qt.ElideMiddle, margin_px: int = 12):
+        """Hält QLabel-Text immer elidiert (…); zeigt Volltext als Tooltip."""
+        label._full_text = full_text  # speichern
+        def _update():
+            w = max(10, label.width() - margin_px)
+            label.setText(label.fontMetrics().elidedText(full_text, mode, w))
+        label._elide_update = _update
+        label.installEventFilter(self)
+        _update()
+
+    def eventFilter(self, obj, ev):
+        # Ellipsis bei Größenänderung nachziehen
+        if isinstance(obj, QLabel) and hasattr(obj, "_elide_update") and ev.type() == QEvent.Resize:
+            obj._elide_update()
+        # (falls du schon FocusIn->selectAll drin hast, einfach drin lassen)
+        return super().eventFilter(obj, ev)      
+
+
+    def ensure_min_visible_rows(self, min_rows: int = 13):
+        if not self.entry_boxes:
+            return
+        per_row = 8
+        sample = self.entry_boxes[:per_row]
+        row_h = max(w.sizeHint().height() for w in sample)        # Höhe der Edit-Reihe
+        label_h = self.fontMetrics().height() + 8                  # grobe Höhe der Original-Zeile
+        v = self.grid_layout.verticalSpacing() or 6
+        padding = 12
+        per_episode = row_h + v + label_h + v
+        self.scroll_area.setMinimumHeight(int(min_rows * per_episode + padding))   
+
+    # Funktion zum Einfügen des Dateinamens in alle Felder
     def insert_filename(self, new_filename, index):
         for i in range(index, len(self.entry_boxes), 8):
             widget = self.entry_boxes[i]
@@ -327,22 +368,22 @@ class FolgenlisteGUI(QWidget):
             elif isinstance(widget, QDateEdit):
                 widget.setDate(QtCore.QDate.fromString(new_filename, "yyyy"))
             elif isinstance(widget, QSpinBox):
-                widget.setValue(int(new_filename)) 
+                widget.setValue(int(new_filename))
 
+    # Funktion zum automatischen Befüllen der Episodenliste
     def fill_episodes(self, start_value):
         episode_index = 5  # Der Index der Episoden-Felder in der entry_boxes-Liste (5. Feld in jeder Zeile)
-
         # Iteriere über alle Episode-Felder in der entry_boxes-Liste
         for i in range(episode_index, len(self.entry_boxes), 8):
             widget = self.entry_boxes[i]
-            if isinstance(widget, QLineEdit):  # Sicherstellen, dass das Feld ein QLineEdit ist (Episode)
+            if isinstance(widget, QLineEdit): 
                 widget.setText(str(start_value))
-                start_value += 1  # Erhöhe den Startwert für die nächste Episode
+                start_value += 1 
                
-
+    # Funktion zum Speichern der Änderungen
     def save_changes(self):
         index = 0
-        for key, value in self.videofiles.items():
+        for key, value in sorted(self.videofiles.items()):
             updated_values = []
             for box in self.entry_boxes[index:index+len(value)]:
                 if isinstance(box, QLineEdit):
@@ -396,13 +437,25 @@ if __name__ == "__main__":
     path_ordner = r'C:\Users\admin\Desktop\Kurenai'
 
     videofiles = {
-    'MM__02.mkv': ['Test', 'Naruto', 'Film', '1920', '0', '026-027', 'Hdhdh', '.mkv'],
-    'MM__04.mkv': ['Test', 'Natsume yuujinchou', '', '', '1', '02', 'L-s', '.mkv'],
-    'MM__05.mkv': ['Test', 'Mashle magic and muscles', '', '', '1', '17', 'Dmpd', '.mkv'],
-    'MM__06.mkv': ['Test', 'Blue exorcist', '', '', '1', '05', 'Onigiri', '.mkv'],
-    'MM__07.mkv': ['Test', 'Boruto', '', '', '1', '224', 'Stars', '.mkv'],
-    'MM__08.mkv': ['Test', 'Accel World EX  ', 'OVA', '', '1', '01', 'unkekannt', '.mkv']
+    'a place to bloom.AMV-Hilary_Cullen.mp4': ['2016', 'Hilary cullen sehr langer Name mit viel blablablb nnnnnnnnnnn', '', '', '1', '', 'A place to bloom amv', '.mp4'],
+    'A Tale of Demons Magic and Insanity.AMV-KenjiKyou.mp4': ['2017', 'A tale of demons magic and insanity ', 'AMV', '', '0', '', 'Kenjikyou', '.mp4'],
+    'Absolutely save you.AMV-jinshi.mp4': ['2018', 'Absolutely save you ', 'AMV', '', '0', '', 'Jinshi', '.mp4'], 'All Alone.AMV-aias.mp4': ['2017', 'All alone ', 'AMV', '', '0', '', 'Aias', '.mp4'],
+    'All that you cant leave behind.AMV-ScorpionsUltd.mp4': ['2019', 'All that you cant leave behind ', 'AMV', '', '0', '', 'Scorpionsultd', '.mp4'], 'Alone.AMV-KenjiKyou.mp4': ['2017', 'Alone ', 'AMV', '', '0', '', 'Kenjikyou', '.mp4'],
+    'Angels Memories.AMV-cecco.mp4': ['2020', 'Angels memories ', 'AMV', '', '0', '', 'Cecco', '.mp4'], 'Another Day.AMV-Wormwood.avi': ['2017', 'Another day ', 'AMV', '', '0', '', 'Wormwood', '.avi'],
+    'in-si-de-sa-in.AMV-zzerg.mp4': ['2021', 'In-si-de-sa-in ', 'AMV', '', '0', '', 'Zzerg', '.mp4'], 'Inner Demons.AMV-XIII.mp4': ['2017', 'Inner demons ', 'AMV', '', '0', '', 'Xiii', '.mp4'],
+    'Insanity.AMV-Nurikokourin.mp4': ['2022', 'Insanity ', 'AMV', '', '0', '', 'Nurikokourin', '.mp4'],
+    'A Tale of Demons Magic and Insanity.AMV-KenjiKyou.mp4': ['2017', 'A tale of demons magic and insanity ', 'AMV', '', '0', '', 'Kenjikyou', '.mp4'],
+    'A Tale of Demons Magic and Insanity.AMV-KenjiKyou.mp4': ['2017', 'A tale of demons magic and insanity ', 'AMV', '', '0', '', 'Kenjikyou', '.mp4'],
+    'A Tale of Demons Magic and Insanity.AMV-KenjiKyou.mp4': ['2017', 'A tale of demons magic and insanity ', 'AMV', '', '2', '', 'Kenjikyou', '.mp4'],
+    'A Tale of Demons Magic and Insanity.AMV-KenjiKyou.mp4': ['2017', 'A tale of demons magic and insanity ', 'AMV', '', '0', '', 'Kenjikyou', '.mp4'],
+    'A Tale of Demons Magic and Insanity.AMV-KenjiKyou.mp4': ['2017', 'A tale of demons magic and insanity ', 'AMV', '', '8', '', 'Kenjikyou', '.mp4'],
+    '1 in-si-de-sa-in.AMV-zzerg.mp4': ['2021', '1 In-si-de-sa-in ', 'AMV', '', '4', '', 'Zzerg', '.mp4'],
+    '2 in-si-de-sa-in.AMV-zzerg.mp4': ['2023', '2 In-si-de-sa-in ', 'AMV', '', '6', '', 'Zzerg', '.mp4'],
+    '4 in-si-de-sa-in.AMV-zzerg.mp4': ['2021', '3 In-si-de-sa-in ', 'AMV', '', '2', '', 'Zzerg', '.mp4'],
+    
 }
+    
+
 
     videofiles= create_gui(videofiles, path, typ_liste, path_ordner)
     print(videofiles)

@@ -34,4 +34,30 @@ def apply_dark_theme(app):
         QPushButton:pressed {
             background-color: #252525;
         }
+        QPushButton#primary {
+    background-color: #2a82da; border: 1px solid #2a82da; color: #fff;
+}
+QPushButton#primary:hover { background-color: #3b8ee6; }
+
+QPushButton#danger  {
+    background-color: #c75050; border: 1px solid #c75050; color: #fff;
+}
+QPushButton#danger:hover { background-color: #d55e5e; } 
+QLineEdit, QComboBox, QSpinBox, QDateEdit {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #8c8c8c;
+    border-radius: 4px;
+    padding: 4px 6px;
+    selection-background-color: #2a82da;
+    selection-color: #ffffff;
+}
+
+/* Dropdown-Liste der ComboBox ebenfalls lesbar */
+QComboBox QAbstractItemView {
+    background-color: #ffffff;
+    color: #000000;
+    selection-background-color: #2a82da;
+    selection-color: #ffffff;
+}
     """)

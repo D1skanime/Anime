@@ -1,12 +1,9 @@
 import os
-import re
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QSpinBox, QVBoxLayout, QScrollArea, QGridLayout, QLineEdit, QDateEdit, QSizePolicy, QComboBox,QHBoxLayout
-from PyQt5.QtGui import QIntValidator
 from PyQt5.QtCore import QSize, Qt
 from PyQt5 import QtCore
 from PyQt5.QtCore import QEvent
-import subprocess
 from app import app
 from style import apply_dark_theme
 
@@ -47,7 +44,9 @@ class FolgenlisteGUI(QWidget):
         lineEdit_add_videofile_name.setText(videofiles[first_key][1])
         lineEdit_add_videofile_name.setCursorPosition(0)
         lineEdit_add_videofile_name.setClearButtonEnabled(True)
+        #dynamische Mindestbreite nach Text
         self._autosize_lineedit_to_text(lineEdit_add_videofile_name, cap_px=1200)
+
         layout.addLayout(self._row(
             "Ändere Dateiname",
             lineEdit_add_videofile_name,
@@ -141,25 +140,56 @@ class FolgenlisteGUI(QWidget):
             lambda: self.open_anime_folder(path_ordner)
         ))
 
-        # Setzen des Hauptlayouts für das Widget
-        self.setLayout(layout)
-
-        # Labels hinzufügen
-        label_layout = QHBoxLayout()
-        label_layout.addWidget(QLabel("Ordner Name"))
-        label_layout.addWidget(QLabel("Dateiname"))
-        label_layout.addWidget(QLabel("Typ"))
-        label_layout.addWidget(QLabel("Jahr"))
-        label_layout.addWidget(QLabel("Staffel"))
-        label_layout.addWidget(QLabel("Episode"))
-        label_layout.addWidget(QLabel("Gruppe"))
-        label_layout.addWidget(QLabel("Dateiendung"))
-        layout.addLayout(label_layout)
+        # Setzen des Hauptlayouts für das Widge
+        #Grid Layout erzeugen
 
         count = 0
         grid_layout = QGridLayout()
+
+        # Labels hinzufügen (Header)
+
+        COL_ORDNER   = 0
+        COL_DATEI    = 1
+        COL_TYP      = 2
+        COL_JAHR     = 3
+        COL_STAFFEL  = 4
+        COL_EPISODE  = 5
+        COL_GRUPPE   = 6
+        COL_ENDUNG   = 7
+
+        grid_layout.setHorizontalSpacing(8)
+        grid_layout.setVerticalSpacing(6)
+
+        SMALL_W, ENDUNG_W, TYP_W = 64, 58, 110
+        
+
+        grid_layout.setColumnMinimumWidth(COL_DATEI, 420)
+        grid_layout.setColumnMinimumWidth(COL_TYP,   TYP_W)
+        grid_layout.setColumnMinimumWidth(COL_ORDNER, SMALL_W)
+        grid_layout.setColumnMinimumWidth(COL_JAHR,   SMALL_W)
+        grid_layout.setColumnMinimumWidth(COL_STAFFEL,SMALL_W)
+        grid_layout.setColumnMinimumWidth(COL_EPISODE,SMALL_W)
+        grid_layout.setColumnMinimumWidth(COL_ENDUNG, ENDUNG_W)
+
+        # Stretch: grosse Felder breit, kleine ohne Stretch
+        grid_layout.setColumnStretch(COL_DATEI,   6)  # << Dateiname gross
+        grid_layout.setColumnStretch(COL_GRUPPE,  3)  # Gruppe mittel
+        grid_layout.setColumnStretch(COL_TYP,     1)  # Typ klein-mittel
+
+        for c in (COL_ORDNER, COL_JAHR, COL_STAFFEL, COL_EPISODE, COL_ENDUNG):
+            grid_layout.setColumnStretch(c, 0)
+
+
+        headers = ["Ordnername", "Dateiname", "Typ", "Jahr", "Staffel", "Episode", "Gruppe", "Dateiendung"]
+        for col, title in enumerate(headers):
+            h = QLabel(title)
+            h.setProperty("role", "header")                 # optionaler Style-Hook
+            h.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+            grid_layout.addWidget(h, 0, col)    
+
+
         cols = 8
-        grid_row = 0
+        grid_row = 1
         for file in sorted(videofiles.keys()):
             ordner_name, dateiname, typ, jahr, staffel, episode, gruppe, dateiendung = videofiles[file]
 
@@ -209,32 +239,45 @@ class FolgenlisteGUI(QWidget):
             Gruppe_edit.view().setStyleSheet("QComboBox QAbstractItemView { background-color: #D3D3D3; color: black;}")
             dateiendung_edit.setStyleSheet("color: black;")
 
-            lineEdit_add_ordner_name.setStyleSheet("color: black;")
-
             # Setze die Größe der Textfelder so, dass sie sich horizontal ausdehnen können
             ordner_name_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
             dateiname_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-            comboBox_type.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-            dateEdit_jahr.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-            spinBox_staffel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-            Episode_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+            comboBox_type.setFixedWidth(TYP_W)
+            comboBox_type.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+            dateEdit_jahr.setFixedWidth(SMALL_W)
+            dateEdit_jahr.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+            spinBox_staffel.setFixedWidth(SMALL_W)
+            spinBox_staffel.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+            Episode_edit.setFixedWidth(SMALL_W)
+            Episode_edit.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+            Episode_edit.setAlignment(Qt.AlignCenter)
             Gruppe_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-            dateiendung_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-            lineEdit_add_ordner_name.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+            dateiendung_edit.setFixedWidth(ENDUNG_W)
+            dateiendung_edit.setAlignment(Qt.AlignCenter)
+            dateiendung_edit.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+
+            for w in (dateEdit_jahr, spinBox_staffel, Episode_edit):
+                    w.setFixedWidth(SMALL_W); w.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed); w.setAlignment(Qt.AlignCenter)
+            dateiendung_edit.setFixedWidth(ENDUNG_W); dateiendung_edit.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed); dateiendung_edit.setAlignment(Qt.AlignCenter)
+            comboBox_type.setFixedWidth(TYP_W); comboBox_type.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+            for w in (dateiname_edit, Gruppe_edit):
+                    w.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
 
             # Alle Felder deaktivieren, außer dateiname, typ, Jahr, Staffel, Episode und Gruppe
             ordner_name_edit.setEnabled(False)
             dateiendung_edit.setEnabled(False)
 
-            grid_layout.addWidget(ordner_name_edit, grid_row, 0)
-            grid_layout.addWidget(dateiname_edit, grid_row, 1)
-            grid_layout.addWidget(comboBox_type, grid_row, 2)
-            grid_layout.addWidget(dateEdit_jahr, grid_row, 3)
-            grid_layout.addWidget(spinBox_staffel, grid_row, 4)
-            grid_layout.addWidget(Episode_edit, grid_row, 5)
-            grid_layout.addWidget(Gruppe_edit, grid_row, 6)
-            grid_layout.addWidget(dateiendung_edit, grid_row, 7)
+
+            #Grid für header
+            grid_layout.addWidget(ordner_name_edit, grid_row,     COL_ORDNER)
+            grid_layout.addWidget(dateiname_edit,   grid_row,     COL_DATEI)
+            grid_layout.addWidget(comboBox_type,    grid_row,     COL_TYP)
+            grid_layout.addWidget(dateEdit_jahr,    grid_row,     COL_JAHR)
+            grid_layout.addWidget(spinBox_staffel,  grid_row,     COL_STAFFEL)
+            grid_layout.addWidget(Episode_edit,     grid_row,     COL_EPISODE)
+            grid_layout.addWidget(Gruppe_edit,      grid_row,     COL_GRUPPE)
+            grid_layout.addWidget(dateiendung_edit, grid_row,     COL_ENDUNG)
 
             orig_label = QLabel(file)  # dict-key = Originaldatei
             orig_label.setObjectName("origLabel")
@@ -292,7 +335,6 @@ class FolgenlisteGUI(QWidget):
 
         self.setLayout(layout)
         self.videofiles = videofiles
-
 
     #Funktion für eine einheitliche Formularzeile
     def _row(self, label_text, editor, btn_text=None, btn_slot=None, expand=True, btn_min_w=None):

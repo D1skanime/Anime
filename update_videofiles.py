@@ -19,6 +19,9 @@ class FolgenlisteGUI(QWidget):
 
         scroll_area = QScrollArea(self)
         scroll_area.setWidgetResizable(True)
+        scroll_area.setAlignment(Qt.AlignTop)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         scroll_widget = QWidget()
         scroll_layout = QVBoxLayout()
 
@@ -390,14 +393,39 @@ class FolgenlisteGUI(QWidget):
     def ensure_min_visible_rows(self, min_rows: int = 13):
         if not self.entry_boxes:
             return
+
         per_row = 8
+        n_episodes = len(self.entry_boxes) // per_row
+
+        # Höhen messen
         sample = self.entry_boxes[:per_row]
-        row_h = max(w.sizeHint().height() for w in sample)        # Höhe der Edit-Reihe
-        label_h = self.fontMetrics().height() + 8                  # grobe Höhe der Original-Zeile
-        v = self.grid_layout.verticalSpacing() or 6
-        padding = 12
-        per_episode = row_h + v + label_h + v
-        self.scroll_area.setMinimumHeight(int(min_rows * per_episode + padding))   
+        row_h   = max(w.sizeHint().height() for w in sample)     # Eingabezeile
+        label_h = self.fontMetrics().height() + 8                 # Original-Label-Zeile
+        vspace  = self.grid_layout.verticalSpacing() or 6
+
+        # Headerhöhe ermitteln
+        header_item = self.grid_layout.itemAtPosition(0, 0)
+        header_h = (header_item.widget().sizeHint().height()
+                    if header_item and header_item.widget()
+                    else self.fontMetrics().height() + 6)
+
+        # Grid-Margins addieren
+        l, t, r, b = self.grid_layout.getContentsMargins()
+
+        per_episode = row_h + vspace + label_h + vspace
+        rows_to_show = min(n_episodes, min_rows)
+
+        content_h = header_h + t + b + rows_to_show * per_episode
+
+        self.scroll_area.setMinimumHeight(int(content_h))
+        if n_episodes <= min_rows:
+            self.scroll_area.setMaximumHeight(int(content_h))     # genau passend, keine Scrollbar
+        else:
+            self.scroll_area.setMaximumHeight(16777215)           # Qt "unendlich", Scrollbar kommt
+
+        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+
+ 
 
     # Funktion zum Einfügen des Dateinamens in alle Felder
     def insert_filename(self, new_filename, index):
